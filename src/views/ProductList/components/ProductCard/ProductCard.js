@@ -1,115 +1,116 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
-import { makeStyles } from '@material-ui/styles';
-import {
-  Card,
-  CardContent,
-  CardActions,
-  Typography,
-  Grid,
-  Divider
-} from '@material-ui/core';
-import AccessTimeIcon from '@material-ui/icons/AccessTime';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import MaterialTable from 'material-table';
+import { renameProp } from 'recompose';
 
-const useStyles = makeStyles(theme => ({
-  root: {},
-  imageContainer: {
-    height: 64,
-    width: 64,
-    margin: '0 auto',
-    border: `1px solid ${theme.palette.divider}`,
-    borderRadius: '5px',
-    overflow: 'hidden',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  image: {
-    width: '100%'
-  },
-  statsItem: {
-    display: 'flex',
-    alignItems: 'center'
-  },
-  statsIcon: {
-    color: theme.palette.icon,
-    marginRight: theme.spacing(1)
-  }
-}));
+export default function ProductCard() {
+	const [ state, setState ] = React.useState({
+		columns: [
+			{ title: 'Name Products', field: 'name_product' },
+			{ title: 'Category Products', field: 'category_products' },
+			{ title: 'Years', field: 'years' },
+			{ title: 'Price', field: 'price' },
+			{
+				title: 'Status',
+				field: 'option',
+				lookup: { 34: 'Available', 63: 'Not Available' }
+			}
+		],
+		data: [
+			{ name_product: 'Mehmet', category_products: 'Baran', years: 1987, price: 'Rp. 75.000', option: 63 },
+			{
+				name_product: 'Daun',
+				category_products: 'Baran',
+				years: 2017,
+				price: 'Rp. 80.000',
+				option: 34
+			},
+			{ name_product: 'Mehmet', category_products: 'Baran', years: 1987, price: 'Rp. 90.000', option: 63 },
+			{
+				name_product: 'Daun',
+				category_products: 'Baran',
+				years: 2017,
+				price: 'Rp. 100.000',
+				option: 34
+			},
+			{ name_product: 'Mehmet', category_products: 'Baran', years: 1987, price: 'Rp. 85.000', option: 63 },
+			{
+				name_product: 'Daun',
+				category_products: 'Baran',
+				years: 2017,
+				price: 'Rp. 95.000',
+				option: 34
+			}
+		]
+	});
 
-const ProductCard = props => {
-  const { className, product, ...rest } = props;
-
-  const classes = useStyles();
-
-  return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <CardContent>
-        <div className={classes.imageContainer}>
-          <img
-            alt="Product"
-            className={classes.image}
-            src={product.imageUrl}
-          />
-        </div>
-        <Typography
-          align="center"
-          gutterBottom
-          variant="h4"
-        >
-          {product.title}
-        </Typography>
-        <Typography
-          align="center"
-          variant="body1"
-        >
-          {product.description}
-        </Typography>
-      </CardContent>
-      <Divider />
-      <CardActions>
-        <Grid
-          container
-          justify="space-between"
-        >
-          <Grid
-            className={classes.statsItem}
-            item
-          >
-            <AccessTimeIcon className={classes.statsIcon} />
-            <Typography
-              display="inline"
-              variant="body2"
-            >
-              Updated 2hr ago
-            </Typography>
-          </Grid>
-          <Grid
-            className={classes.statsItem}
-            item
-          >
-            <GetAppIcon className={classes.statsIcon} />
-            <Typography
-              display="inline"
-              variant="body2"
-            >
-              {product.totalDownloads} Downloads
-            </Typography>
-          </Grid>
-        </Grid>
-      </CardActions>
-    </Card>
-  );
-};
-
-ProductCard.propTypes = {
-  className: PropTypes.string,
-  product: PropTypes.object.isRequired
-};
-
-export default ProductCard;
+	return (
+		<MaterialTable
+			title="Products"
+			columns={state.columns}
+			data={state.data}
+			editable={{
+				onRowAdd: (newData) =>
+					new Promise((resolve) => {
+						setTimeout(() => {
+							resolve();
+							setState((prevState) => {
+								const data = [ ...prevState.data ];
+								data.push(newData);
+								return { ...prevState, data };
+							});
+						}, 600);
+					}),
+				onRowUpdate: (newData, oldData) =>
+					new Promise((resolve) => {
+						setTimeout(() => {
+							resolve();
+							if (oldData) {
+								setState((prevState) => {
+									const data = [ ...prevState.data ];
+									data[data.indexOf(oldData)] = newData;
+									return { ...prevState, data };
+								});
+							}
+						}, 600);
+					}),
+				onRowDelete: (oldData) =>
+					new Promise((resolve) => {
+						setTimeout(() => {
+							resolve();
+							setState((prevState) => {
+								const data = [ ...prevState.data ];
+								data.splice(data.indexOf(oldData), 1);
+								return { ...prevState, data };
+							});
+						}, 600);
+					})
+			}}
+			options={{
+				headerStyle: {
+					fontSize: '15px',
+					fontWeight: 'bold',
+					borderRight: '1px solid #ccc'
+				},
+				rowStyle: {
+					fontFamily: 'Roboto,Helvetica,Arial,sans-serif'
+				},
+				exportButton: true
+			}}
+			detailPanel={(rowData) => {
+				return (
+					<img
+						style={{
+							width: '50%',
+							height: '400px',
+							display: 'block',
+							marginLeft: 'auto',
+							marginRight: 'auto'
+						}}
+						src="https://images.unsplash.com/photo-1495231916356-a86217efff12?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=676&q=80"
+					/>
+				);
+			}}
+			onRowClick={(event, rowData, togglePanel) => togglePanel()}
+		/>
+	);
+}
