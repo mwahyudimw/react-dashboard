@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Link as RouterLink, withRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import validate from 'validate.js';
-import { makeStyles } from '@material-ui/styles';
+import React, { useState, useEffect } from "react";
+import { Link as RouterLink, withRouter } from "react-router-dom";
+import PropTypes from "prop-types";
+import validate from "validate.js";
+import { makeStyles } from "@material-ui/styles";
 import {
   Grid,
   Button,
@@ -11,173 +11,169 @@ import {
   Link,
   FormHelperText,
   Checkbox,
-  Typography
-} from '@material-ui/core';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+  Typography,
+} from "@material-ui/core";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const schema = {
-  firstName: {
-    presence: { allowEmpty: false, message: 'is required' },
+  username: {
+    presence: { allowEmpty: false, message: "is required" },
     length: {
-      maximum: 32
-    }
-  },
-  lastName: {
-    presence: { allowEmpty: false, message: 'is required' },
-    length: {
-      maximum: 32
-    }
+      maximum: 32,
+    },
   },
   email: {
-    presence: { allowEmpty: false, message: 'is required' },
+    presence: { allowEmpty: false, message: "is required" },
     email: true,
     length: {
-      maximum: 64
-    }
+      maximum: 64,
+    },
   },
   password: {
-    presence: { allowEmpty: false, message: 'is required' },
+    presence: { allowEmpty: false, message: "is required" },
     length: {
-      maximum: 128
-    }
+      maximum: 128,
+    },
   },
   policy: {
-    presence: { allowEmpty: false, message: 'is required' },
-    checked: true
-  }
+    presence: { allowEmpty: false, message: "is required" },
+    checked: true,
+  },
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.default,
-    height: '100%'
+    height: "100%",
   },
   grid: {
-    height: '100%'
+    height: "100%",
   },
   quoteContainer: {
-    [theme.breakpoints.down('md')]: {
-      display: 'none'
-    }
+    [theme.breakpoints.down("md")]: {
+      display: "none",
+    },
   },
   quote: {
     backgroundColor: theme.palette.neutral,
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundImage: 'url(/images/auth.jpg)',
-    backgroundSize: 'cover',
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center'
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundImage: "url(/images/auth.jpg)",
+    backgroundSize: "cover",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center",
   },
   quoteInner: {
-    textAlign: 'center',
-    flexBasis: '600px'
+    textAlign: "center",
+    flexBasis: "600px",
   },
   quoteText: {
     color: theme.palette.white,
-    fontWeight: 300
+    fontWeight: 300,
   },
   name: {
     marginTop: theme.spacing(3),
-    color: theme.palette.white
+    color: theme.palette.white,
   },
   bio: {
-    color: theme.palette.white
+    color: theme.palette.white,
   },
   contentContainer: {},
   content: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column'
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
   },
   contentHeader: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     paddingTop: theme.spacing(5),
     paddingBototm: theme.spacing(2),
     paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2)
+    paddingRight: theme.spacing(2),
   },
   logoImage: {
-    marginLeft: theme.spacing(4)
+    marginLeft: theme.spacing(4),
   },
   contentBody: {
     flexGrow: 1,
-    display: 'flex',
-    alignItems: 'center',
-    [theme.breakpoints.down('md')]: {
-      justifyContent: 'center'
-    }
+    display: "flex",
+    alignItems: "center",
+    [theme.breakpoints.down("md")]: {
+      justifyContent: "center",
+    },
   },
   form: {
     paddingLeft: 100,
     paddingRight: 100,
     paddingBottom: 125,
     flexBasis: 700,
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(2)
-    }
+      paddingRight: theme.spacing(2),
+    },
   },
   title: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3),
   },
   textField: {
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
   policy: {
     marginTop: theme.spacing(1),
-    display: 'flex',
-    alignItems: 'center'
+    display: "flex",
+    alignItems: "center",
   },
   policyCheckbox: {
-    marginLeft: '-14px'
+    marginLeft: "-14px",
   },
   signUpButton: {
-    margin: theme.spacing(2, 0)
-  }
+    margin: theme.spacing(2, 0),
+  },
 }));
 
-const SignUp = props => {
+const SignUp = (props) => {
   const { history } = props;
 
   const classes = useStyles();
-
+  const [loading, setLoading] = useState(false);
   const [formState, setFormState] = useState({
     isValid: false,
     values: {},
     touched: {},
-    errors: {}
+    errors: {},
   });
 
   useEffect(() => {
     const errors = validate(formState.values, schema);
 
-    setFormState(formState => ({
+    setFormState((formState) => ({
       ...formState,
       isValid: errors ? false : true,
-      errors: errors || {}
+      errors: errors || {},
     }));
   }, [formState.values]);
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     event.persist();
 
-    setFormState(formState => ({
+    setFormState((formState) => ({
       ...formState,
       values: {
         ...formState.values,
         [event.target.name]:
-          event.target.type === 'checkbox'
+          event.target.type === "checkbox"
             ? event.target.checked
-            : event.target.value
+            : event.target.value,
       },
       touched: {
         ...formState.touched,
-        [event.target.name]: true
-      }
+        [event.target.name]: true,
+      },
     }));
   };
 
@@ -185,57 +181,58 @@ const SignUp = props => {
     history.goBack();
   };
 
-  const handleSignUp = event => {
+  const handleSignUp = (event) => {
     event.preventDefault();
-    history.push('/');
+    setLoading(true);
+    const dataUsers = {
+      username: formState.values.username,
+      password: formState.values.password,
+      email: formState.values.email,
+    };
+    axios
+      .post("http://dashmanage.herokuapp.com/api/v1/sign-up", dataUsers)
+      .then((res) => {
+        console.log("respon", res);
+        setLoading(false);
+        Swal.fire("Good job!", "Registration successful", "success");
+        history.push("/sign-in");
+      })
+      .catch((err) => {
+        console.log("err", err);
+        setLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Email already exist!",
+        });
+      });
   };
 
-  const hasError = field =>
+  const hasError = (field) =>
     formState.touched[field] && formState.errors[field] ? true : false;
 
   return (
     <div className={classes.root}>
-      <Grid
-        className={classes.grid}
-        container
-      >
-        <Grid
-          className={classes.quoteContainer}
-          item
-          lg={5}
-        >
+      <Grid className={classes.grid} container>
+        <Grid className={classes.quoteContainer} item lg={5}>
           <div className={classes.quote}>
             <div className={classes.quoteInner}>
-              <Typography
-                className={classes.quoteText}
-                variant="h1"
-              >
+              <Typography className={classes.quoteText} variant="h1">
                 Hella narwhal Cosby sweater McSweeney's, salvia kitsch before
                 they sold out High Life.
               </Typography>
               <div className={classes.person}>
-                <Typography
-                  className={classes.name}
-                  variant="body1"
-                >
+                <Typography className={classes.name} variant="body1">
                   Takamaru Ayako
                 </Typography>
-                <Typography
-                  className={classes.bio}
-                  variant="body2"
-                >
+                <Typography className={classes.bio} variant="body2">
                   Manager at inVision
                 </Typography>
               </div>
             </div>
           </div>
         </Grid>
-        <Grid
-          className={classes.content}
-          item
-          lg={7}
-          xs={12}
-        >
+        <Grid className={classes.content} item lg={7} xs={12}>
           <div className={classes.content}>
             <div className={classes.contentHeader}>
               <IconButton onClick={handleBack}>
@@ -243,76 +240,53 @@ const SignUp = props => {
               </IconButton>
             </div>
             <div className={classes.contentBody}>
-              <form
-                className={classes.form}
-                onSubmit={handleSignUp}
-              >
-                <Typography
-                  className={classes.title}
-                  variant="h2"
-                >
+              <form className={classes.form} onSubmit={handleSignUp}>
+                <Typography className={classes.title} variant="h2">
                   Create new account
                 </Typography>
-                <Typography
-                  color="textSecondary"
-                  gutterBottom
-                >
+                <Typography color="textSecondary" gutterBottom>
                   Use your email to create new account
                 </Typography>
                 <TextField
                   className={classes.textField}
-                  error={hasError('firstName')}
+                  error={hasError("username")}
                   fullWidth
                   helperText={
-                    hasError('firstName') ? formState.errors.firstName[0] : null
+                    hasError("username") ? formState.errors.username[0] : null
                   }
-                  label="First name"
-                  name="firstName"
+                  label="username"
+                  name="username"
                   onChange={handleChange}
                   type="text"
-                  value={formState.values.firstName || ''}
+                  value={formState.values.username || ""}
                   variant="outlined"
                 />
                 <TextField
                   className={classes.textField}
-                  error={hasError('lastName')}
+                  error={hasError("email")}
                   fullWidth
                   helperText={
-                    hasError('lastName') ? formState.errors.lastName[0] : null
-                  }
-                  label="Last name"
-                  name="lastName"
-                  onChange={handleChange}
-                  type="text"
-                  value={formState.values.lastName || ''}
-                  variant="outlined"
-                />
-                <TextField
-                  className={classes.textField}
-                  error={hasError('email')}
-                  fullWidth
-                  helperText={
-                    hasError('email') ? formState.errors.email[0] : null
+                    hasError("email") ? formState.errors.email[0] : null
                   }
                   label="Email address"
                   name="email"
                   onChange={handleChange}
                   type="text"
-                  value={formState.values.email || ''}
+                  value={formState.values.email || ""}
                   variant="outlined"
                 />
                 <TextField
                   className={classes.textField}
-                  error={hasError('password')}
+                  error={hasError("password")}
                   fullWidth
                   helperText={
-                    hasError('password') ? formState.errors.password[0] : null
+                    hasError("password") ? formState.errors.password[0] : null
                   }
                   label="Password"
                   name="password"
                   onChange={handleChange}
                   type="password"
-                  value={formState.values.password || ''}
+                  value={formState.values.password || ""}
                   variant="outlined"
                 />
                 <div className={classes.policy}>
@@ -328,7 +302,7 @@ const SignUp = props => {
                     color="textSecondary"
                     variant="body1"
                   >
-                    I have read the{' '}
+                    I have read the{" "}
                     <Link
                       color="primary"
                       component={RouterLink}
@@ -340,7 +314,7 @@ const SignUp = props => {
                     </Link>
                   </Typography>
                 </div>
-                {hasError('policy') && (
+                {hasError("policy") && (
                   <FormHelperText error>
                     {formState.errors.policy[0]}
                   </FormHelperText>
@@ -354,18 +328,11 @@ const SignUp = props => {
                   type="submit"
                   variant="contained"
                 >
-                  Sign up now
+                  {loading ? "loading..." : "Sign up now"}
                 </Button>
-                <Typography
-                  color="textSecondary"
-                  variant="body1"
-                >
-                  Have an account?{' '}
-                  <Link
-                    component={RouterLink}
-                    to="/sign-in"
-                    variant="h6"
-                  >
+                <Typography color="textSecondary" variant="body1">
+                  Have an account?{" "}
+                  <Link component={RouterLink} to="/sign-in" variant="h6">
                     Sign in
                   </Link>
                 </Typography>
@@ -379,7 +346,7 @@ const SignUp = props => {
 };
 
 SignUp.propTypes = {
-  history: PropTypes.object
+  history: PropTypes.object,
 };
 
 export default withRouter(SignUp);
