@@ -1,13 +1,12 @@
 import React from 'react';
 import { Switch, Redirect } from 'react-router-dom';
-
 import { RouteWithLayout } from './components';
 import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
 
 import {
   Dashboard as DashboardView,
-  ProductList as ProductListView,
-  Sales as SalesView,
+  Products as ProductsView,
+  Category as CategoryView,
   UserList as UserListView,
   Account as AccountView,
   Settings as SettingsView,
@@ -37,16 +36,16 @@ const Routes = () => {
         path="/users"
       />
       <RouteWithLayout
-        component={ProductListView}
+        component={ProductsView}
         exact
         layout={MainLayout}
         path="/products"
       />
        <RouteWithLayout
-        component={SalesView}
+        component={CategoryView}
         exact
         layout={MainLayout}
-        path="/sales"
+        path="/category"
       />
       <RouteWithLayout
         component={AccountView}
