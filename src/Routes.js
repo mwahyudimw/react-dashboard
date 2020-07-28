@@ -1,13 +1,20 @@
+<<<<<<< HEAD
 import React from "react";
 import { Switch, Redirect, Route } from "react-router-dom";
 
 import { RouteWithLayout } from "./components";
 import { Main as MainLayout, Minimal as MinimalLayout } from "./layouts";
+=======
+import React from 'react';
+import { Switch, Redirect } from 'react-router-dom';
+import { RouteWithLayout } from './components';
+import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
+>>>>>>> 7a2f91e880b41754162cbe384771c8ef7186bb01
 
 import {
   Dashboard as DashboardView,
-  ProductList as ProductListView,
-  Sales as SalesView,
+  Products as ProductsView,
+  Category as CategoryView,
   UserList as UserListView,
   Account as AccountView,
   Settings as SettingsView,
@@ -32,16 +39,21 @@ const Routes = () => {
         path="/users"
       />
       <RouteWithLayout
-        component={ProductListView}
+        component={ProductsView}
         exact
         layout={MainLayout}
         path="/products"
       />
+<<<<<<< HEAD
       <RouteWithLayout
         component={SalesView}
+=======
+       <RouteWithLayout
+        component={CategoryView}
+>>>>>>> 7a2f91e880b41754162cbe384771c8ef7186bb01
         exact
         layout={MainLayout}
-        path="/sales"
+        path="/category"
       />
       <RouteWithLayout
         component={AccountView}

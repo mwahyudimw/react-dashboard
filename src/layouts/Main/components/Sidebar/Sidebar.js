@@ -10,7 +10,7 @@ import TextFieldsIcon from '@material-ui/icons/TextFields';
 import ImageIcon from '@material-ui/icons/Image';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import SettingsIcon from '@material-ui/icons/Settings';
-import LoyaltyIcon from '@material-ui/icons/Loyalty';
+import CategoryIcon from '@material-ui/icons/Category';
 
 import { Profile, SidebarNav } from './components';
 
@@ -30,7 +30,8 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2)
   },
   divider: {
-    margin: theme.spacing(2, 0)
+    margin: theme.spacing(2, 0),
+    border: '1px solid gray'
   },
   nav: {
     marginBottom: theme.spacing(2)
@@ -59,9 +60,9 @@ const Sidebar = props => {
       icon: <ShoppingBasketIcon />
     },
     {
-      title: 'Sales',
-      href: '/sales',
-      icon: <LoyaltyIcon />
+      title: 'Category',
+      href: '/category',
+      icon: <CategoryIcon />
     },
     {
       title: 'Account',

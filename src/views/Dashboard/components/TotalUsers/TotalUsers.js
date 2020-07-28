@@ -8,34 +8,40 @@ import PeopleIcon from '@material-ui/icons/PeopleOutlined';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    height: '100%'
+    height: '100%',
+    background: 'teal'
   },
   content: {
     alignItems: 'center',
     display: 'flex'
   },
   title: {
-    fontWeight: 700
+    fontWeight: 700,
+    color: '#fff'
   },
   avatar: {
-    backgroundColor: theme.palette.success.main,
+    backgroundColor: '#fff',
     height: 56,
     width: 56
   },
   icon: {
     height: 32,
-    width: 32
+    width: 32,
+    color: 'teal'
   },
   difference: {
     marginTop: theme.spacing(2),
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+  },
+  differenceTextColor: {
+    color: '#fff'
   },
   differenceIcon: {
-    color: theme.palette.success.dark
+    color: '#fff'
   },
   differenceValue: {
-    color: theme.palette.success.dark,
+    color: '#fff',
     marginRight: theme.spacing(1)
   }
 }));
@@ -64,7 +70,7 @@ const TotalUsers = props => {
             >
               TOTAL USERS
             </Typography>
-            <Typography variant="h3">1,600</Typography>
+            <Typography className={classes.differenceTextColor} variant="h3">1,600</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>
