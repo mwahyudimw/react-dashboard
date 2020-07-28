@@ -15,40 +15,26 @@ export default function Categeory() {
   const classes = useStyles();
 	const [ state, setState ] = React.useState({
 		columns: [
-			{ title: 'Name Products', field: 'name_product' },
+			{ title: 'Name', field: 'name' },
 			{ title: 'Slug', field: 'slug' },
-			{ title: 'Years', field: 'years' },
-			{ title: 'Price', field: 'price' },
-			{
-				title: 'Status',
-				field: 'option',
-				lookup: { 34: 'Available', 63: 'Not Available' }
-			}
+			{ title: 'ID Product', field: 'productId' },
+			
 		],
 		data: [
-			{ name_product: 'Mehmet', slug: 'Baran', years: 1987, price: 'Rp. 75.000', option: 63 },
 			{
-				name_product: 'Daun',
-				slug: 'Baran',
-				years: 2017,
-				price: 'Rp. 80.000',
-				option: 34
+				name: 'Daun',
+				slug: 'das',
+				productId: '1'
 			},
-			{ name_product: 'Mehmet', slug: 'Baran', years: 1987, price: 'Rp. 90.000', option: 63 },
 			{
-				name_product: 'Daun',
-				slug: 'Baran',
-				years: 2017,
-				price: 'Rp. 100.000',
-				option: 34
+				name: 'Pohon',
+				slug: 'fas',
+				productId: '2'
 			},
-			{ name_product: 'Mehmet', slug: 'Baran', years: 1987, price: 'Rp. 85.000', option: 63 },
 			{
-				name_product: 'Daun',
-				slug: 'Baran',
-				years: 2017,
-				price: 'Rp. 95.000',
-				option: 34
+				name: 'Lontong',
+				slug: 'gas',
+				productId: '3'
 			}
 		]
 	});
@@ -101,28 +87,15 @@ export default function Categeory() {
 				headerStyle: {
 					fontSize: '15px',
 					fontWeight: 'bold',
-					borderRight: '1px solid #ccc'
+					borderRight: '1px solid #fff',
+					background: '#358A7C',
+					color: '#fff'
 				},
 				rowStyle: {
 					fontFamily: 'Roboto,Helvetica,Arial,sans-serif'
 				},
 				exportButton: true
 			}}
-			detailPanel={(rowData) => {
-				return (
-					<img
-						style={{
-							width: '50%',
-							height: '400px',
-							display: 'block',
-							marginLeft: 'auto',
-							marginRight: 'auto'
-						}}
-						src="https://images.unsplash.com/photo-1495231916356-a86217efff12?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=676&q=80"
-					/>
-				);
-			}}
-			onRowClick={(event, rowData, togglePanel) => togglePanel()}
 		/>
     </div>
 	);
