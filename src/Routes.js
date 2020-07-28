@@ -1,8 +1,8 @@
-import React from 'react';
-import { Switch, Redirect } from 'react-router-dom';
+import React from "react";
+import { Switch, Redirect, Route } from "react-router-dom";
 
-import { RouteWithLayout } from './components';
-import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
+import { RouteWithLayout } from "./components";
+import { Main as MainLayout, Minimal as MinimalLayout } from "./layouts";
 
 import {
   Dashboard as DashboardView,
@@ -13,17 +13,12 @@ import {
   Settings as SettingsView,
   SignUp as SignUpView,
   SignIn as SignInView,
-  NotFound as NotFoundView
-} from './views';
+  NotFound as NotFoundView,
+} from "./views";
 
 const Routes = () => {
   return (
     <Switch>
-      <Redirect
-        exact
-        from="/"
-        to="/dashboard"
-      />
       <RouteWithLayout
         component={DashboardView}
         exact
@@ -42,7 +37,7 @@ const Routes = () => {
         layout={MainLayout}
         path="/products"
       />
-       <RouteWithLayout
+      <RouteWithLayout
         component={SalesView}
         exact
         layout={MainLayout}
@@ -60,13 +55,13 @@ const Routes = () => {
         layout={MainLayout}
         path="/settings"
       />
-      <RouteWithLayout
+      <Route
         component={SignUpView}
         exact
         layout={MinimalLayout}
         path="/sign-up"
       />
-      <RouteWithLayout
+      <Route
         component={SignInView}
         exact
         layout={MinimalLayout}
@@ -78,7 +73,7 @@ const Routes = () => {
         layout={MinimalLayout}
         path="/not-found"
       />
-      <Redirect to="/not-found" />
+      <Redirect to="/dashboard" />
     </Switch>
   );
 };

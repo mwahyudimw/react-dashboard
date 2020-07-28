@@ -16,6 +16,7 @@ import {
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { apiDashManage } from "../../api/api";
 
 const schema = {
   username: {
@@ -190,7 +191,7 @@ const SignUp = (props) => {
       email: formState.values.email,
     };
     axios
-      .post("http://dashmanage.herokuapp.com/api/v1/sign-up", dataUsers)
+      .post(`${apiDashManage + "sign-up"}`, dataUsers)
       .then((res) => {
         console.log("respon", res);
         setLoading(false);
@@ -210,7 +211,6 @@ const SignUp = (props) => {
 
   const hasError = (field) =>
     formState.touched[field] && formState.errors[field] ? true : false;
-
   return (
     <div className={classes.root}>
       <Grid className={classes.grid} container>
