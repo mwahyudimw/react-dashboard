@@ -8,10 +8,14 @@ import {
   Products as ProductsView,
   Category as CategoryView,
   UserList as UserListView,
+  Bank as BankView,
+  Sale as SaleView,
   Account as AccountView,
   Settings as SettingsView,
   SignUp as SignUpView,
   SignIn as SignInView,
+  VerifyEmail as VerifyEmailView,
+  ResetPass as ResetPassView,
   NotFound as NotFoundView
 } from './views';
 
@@ -47,6 +51,18 @@ const Routes = () => {
         layout={MainLayout}
         path="/category"
       />
+       <RouteWithLayout
+        component={BankView}
+        exact
+        layout={MainLayout}
+        path="/bank"
+      />
+       <RouteWithLayout
+        component={SaleView}
+        exact
+        layout={MainLayout}
+        path="/sale"
+      />
       <RouteWithLayout
         component={AccountView}
         exact
@@ -70,6 +86,18 @@ const Routes = () => {
         exact
         layout={MinimalLayout}
         path="/sign-in"
+      />
+      <RouteWithLayout
+        component={VerifyEmailView}
+        exact
+        layout={MinimalLayout}
+        path="/verify-email/:id"
+      />
+      <RouteWithLayout
+        component={ResetPassView}
+        exact
+        layout={MinimalLayout}
+        path="/reset-pass/:id"
       />
       <RouteWithLayout
         component={NotFoundView}

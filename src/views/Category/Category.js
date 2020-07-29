@@ -4,14 +4,14 @@ import MaterialTable from 'material-table';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(0.5)
+    padding: theme.spacing(2)
   },
   content: {
     marginTop: theme.spacing(0)
   }
 }));
 
-export default function Categeory() {
+export default function Category() {
   const classes = useStyles();
 	const [ state, setState ] = React.useState({
 		columns: [

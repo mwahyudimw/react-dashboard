@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function Products() {
+export default function Sale() {
 	const classes = useStyles();
 	const [ state, setState ] = React.useState({
 		columns: [

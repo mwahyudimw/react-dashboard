@@ -5,7 +5,7 @@ import { UsersTable } from './components';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(0.5)
+    padding: theme.spacing(2)
   },
   content: {
     marginTop: theme.spacing(0)

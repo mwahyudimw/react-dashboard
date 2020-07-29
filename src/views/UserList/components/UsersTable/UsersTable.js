@@ -50,7 +50,7 @@ function UsersTable() {
       ]}
       options={{
         headerStyle:{
-          fontSize:'15px', fontWeight:'bold', borderRight:'1px solid #ccc'
+          fontSize:'15px', fontWeight:'bold', borderRight:'1px solid #fff', background: '#35897B', color: '#fff'
         },
         rowStyle: {
           fontFamily:'Roboto,Helvetica,Arial,sans-serif'  

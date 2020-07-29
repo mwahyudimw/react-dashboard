@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function Products() {
+export default function Bank() {
 	const classes = useStyles();
 	const [ state, setState ] = React.useState({
 		columns: [
@@ -73,7 +73,7 @@ export default function Products() {
 			<div className={classes.root}>
 				<MaterialTable
 					className={classes.content}
-					title="Products"
+					title="Bank"
 					columns={state.columns}
 					data={state.data}
 					editable={{
