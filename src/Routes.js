@@ -1,15 +1,7 @@
-<<<<<<< HEAD
 import React from "react";
 import { Switch, Redirect, Route } from "react-router-dom";
-
 import { RouteWithLayout } from "./components";
 import { Main as MainLayout, Minimal as MinimalLayout } from "./layouts";
-=======
-import React from 'react';
-import { Switch, Redirect } from 'react-router-dom';
-import { RouteWithLayout } from './components';
-import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
->>>>>>> 7a2f91e880b41754162cbe384771c8ef7186bb01
 
 import {
   Dashboard as DashboardView,
@@ -44,13 +36,8 @@ const Routes = () => {
         layout={MainLayout}
         path="/products"
       />
-<<<<<<< HEAD
       <RouteWithLayout
-        component={SalesView}
-=======
-       <RouteWithLayout
         component={CategoryView}
->>>>>>> 7a2f91e880b41754162cbe384771c8ef7186bb01
         exact
         layout={MainLayout}
         path="/category"
