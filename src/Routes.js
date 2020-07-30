@@ -1,7 +1,7 @@
-import React from 'react';
-import { Switch, Redirect } from 'react-router-dom';
-import { RouteWithLayout } from './components';
-import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
+import React from "react";
+import { Switch, Redirect } from "react-router-dom";
+import { RouteWithLayout } from "./components";
+import { Main as MainLayout, Minimal as MinimalLayout } from "./layouts";
 
 import {
   Dashboard as DashboardView,
@@ -16,17 +16,13 @@ import {
   SignIn as SignInView,
   VerifyEmail as VerifyEmailView,
   ResetPass as ResetPassView,
-  NotFound as NotFoundView
-} from './views';
+  NotFound as NotFoundView,
+} from "./views";
 
 const Routes = () => {
   return (
     <Switch>
-      <Redirect
-        exact
-        from="/"
-        to="/dashboard"
-      />
+      <Redirect exact from="/" to="/dashboard" />
       <RouteWithLayout
         component={DashboardView}
         exact
@@ -45,19 +41,19 @@ const Routes = () => {
         layout={MainLayout}
         path="/products"
       />
-       <RouteWithLayout
+      <RouteWithLayout
         component={CategoryView}
         exact
         layout={MainLayout}
         path="/category"
       />
-       <RouteWithLayout
+      <RouteWithLayout
         component={BankView}
         exact
         layout={MainLayout}
         path="/bank"
       />
-       <RouteWithLayout
+      <RouteWithLayout
         component={SaleView}
         exact
         layout={MainLayout}
@@ -91,7 +87,7 @@ const Routes = () => {
         component={VerifyEmailView}
         exact
         layout={MinimalLayout}
-        path="/verify-email/:id"
+        path="/verify-email"
       />
       <RouteWithLayout
         component={ResetPassView}
