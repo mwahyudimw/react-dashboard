@@ -1,63 +1,85 @@
-import React, { useState } from 'react';
-import MaterialTable from 'material-table';
+import React, { useState, useEffect } from "react";
+import MaterialTable from "material-table";
+import { apiDashManage } from "../../../../api/api";
+import axios from "axios";
+import LoadingOverlay from "react-loading-overlay";
+import Swal from "sweetalert2";
 
 function UsersTable() {
   const tableRef = React.createRef();
-  
+  const [loading, setLoading] = useState(false);
+  const [listDataUser, setListDataUser] = useState([]);
+
+  useEffect(() => {
+    handleGetDataUser();
+  }, []);
+  const handleGetDataUser = () => {
+    setLoading(true);
+    axios({
+      method: "get",
+      url: `${apiDashManage + "users"}`,
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+      .then((res) => {
+        setListDataUser(res.data.user);
+        setLoading(false);
+        console.log("data baru user", res);
+      })
+      .catch((err) => {
+        setLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "check your connection",
+          text: "",
+        });
+      });
+  };
+
   return (
-    <MaterialTable        
-      title="Users List"
-      tableRef={tableRef}
-      columns={[
-        {
-          title: 'Avatar',
-          field: 'avatar',
-          render: rowData => (
-            <img
-              style={{ height: 36, borderRadius: '50%' }}
-              src={rowData.avatar}
-            />
-          ),
-        },
-        { title: 'ID User', field: 'id' },
-        { title: 'Email', field: 'email' },
-        { title: 'First Name', field: 'first_name'},
-        { title: 'Last Name', field: 'last_name'}
-      ]}
-      data={query =>
-        new Promise((resolve, reject) => {
-          let url = 'https://reqres.in/api/users?'
-          url += 'per_page=' + query.pageSize
-          url += '&page=' + (query.page + 1)
-          fetch(url)
-            .then(response => response.json())
-            .then(result => {
-              resolve({
-                data: result.data,
-                page: result.page - 1,
-                totalCount: result.total,
-              })
-            })
-        })
-      }
-      actions={[
-        {
-          icon: 'refresh',
-          tooltip: 'Refresh Data',
-          isFreeAction: true,
-          onClick: () => tableRef.current && tableRef.current.onQueryChange(),
-        }
-      ]}
-      options={{
-        headerStyle:{
-          fontSize:'15px', fontWeight:'bold', borderRight:'1px solid #ccc'
-        },
-        rowStyle: {
-          fontFamily:'Roboto,Helvetica,Arial,sans-serif'  
-        }
+    <LoadingOverlay active={loading} spinner text="loading your data...">
+      <MaterialTable
+        title="Users List"
+        tableRef={tableRef}
+        columns={[
+          {
+            title: "Avatar",
+            field: "picture ",
+            render: (rowData) => (
+              <img
+                style={{ height: 36, borderRadius: "50%" }}
+                src={`http://dashmanage.herokuapp.com/${rowData.picture}`}
+              />
+            ),
+          },
+          { title: "ID User", field: "_id" },
+          { title: "Email", field: "email" },
+          { title: "Username", field: "username" },
+          // { title: "Last Name", field: "last_name" },
+        ]}
+        data={listDataUser}
+        actions={[
+          {
+            icon: "refresh",
+            tooltip: "Refresh Data",
+            isFreeAction: true,
+            onClick: () => tableRef.current && tableRef.current.onQueryChange(),
+          },
+        ]}
+        options={{
+          headerStyle: {
+            fontSize: "15px",
+            fontWeight: "bold",
+            borderRight: "1px solid #ccc",
+          },
+          rowStyle: {
+            fontFamily: "Roboto,Helvetica,Arial,sans-serif",
+          },
         }}
-    />
-  )
+      />
+    </LoadingOverlay>
+  );
 }
 
 export default UsersTable;

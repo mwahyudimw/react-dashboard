@@ -182,7 +182,7 @@ const SignIn = (props) => {
       .then((res) => {
         console.log(res, "MASUK");
         localStorage.setItem("token", res.data.token);
-        sessionStorage.setItem("data", JSON.stringify(res.data.user));
+        localStorage.setItem("data", JSON.stringify(res.data.user));
         setLoading(false);
         history.push("/dashboard");
       })

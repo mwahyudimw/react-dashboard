@@ -21,16 +21,11 @@ const useStyles = makeStyles(() => ({
 
 const AccountDetails = (props) => {
   const { className, ...rest } = props;
-
   const classes = useStyles();
-
+  const [dataUser, setDataUser] = useState([]);
   const [values, setValues] = useState({
-    firstName: "Shen",
-    lastName: "Zhi",
-    email: "shen.zhi@devias.io",
-    phone: "98988989",
-    state: "Alabama",
-    country: "USA",
+    username: "",
+    email: "",
   });
 
   const handleChange = (event) => {
@@ -40,24 +35,20 @@ const AccountDetails = (props) => {
     });
   };
 
-  const states = [
-    {
-      value: "alabama",
-      label: "Alabama",
-    },
-    {
-      value: "new-york",
-      label: "New York",
-    },
-    {
-      value: "san-francisco",
-      label: "San Francisco",
-    },
-  ];
-
   useEffect(() => {
     handleGetDataUser();
+    const user = JSON.parse(localStorage.getItem("data"));
+    setValues((values) => ({
+      ...values,
+      username: user.username,
+      email: user.email,
+    }));
+    setDataUser(JSON.parse(localStorage.getItem("data")));
   }, []);
+
+  useEffect(() => {
+    console.log("dataUsersssssss", dataUser);
+  }, [dataUser]);
 
   const handleGetDataUser = () => {
     axios({
@@ -71,6 +62,20 @@ const AccountDetails = (props) => {
     });
   };
 
+  const handleUpdateUser = () => {
+    axios({
+      method: "put",
+      url: `${apiDashManage + "update/user"}`,
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+      data: values,
+    }).then((res) => {
+      localStorage.setItem("data", JSON.stringify(res.data.user));
+      console.log("update user", res);
+    });
+  };
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <form autoComplete="off" noValidate>
@@ -81,25 +86,12 @@ const AccountDetails = (props) => {
             <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
-                helperText="Please specify the first name"
-                label="First name"
+                label="username"
                 margin="dense"
-                name="firstName"
+                name="username"
                 onChange={handleChange}
                 required
-                value={values.firstName}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Last name"
-                margin="dense"
-                name="lastName"
-                onChange={handleChange}
-                required
-                value={values.lastName}
+                value={values.username}
                 variant="outlined"
               />
             </Grid>
@@ -115,56 +107,15 @@ const AccountDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Phone Number"
-                margin="dense"
-                name="phone"
-                onChange={handleChange}
-                type="number"
-                value={values.phone}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Select State"
-                margin="dense"
-                name="state"
-                onChange={handleChange}
-                required
-                select
-                // eslint-disable-next-line react/jsx-sort-props
-                SelectProps={{ native: true }}
-                value={values.state}
-                variant="outlined"
-              >
-                {states.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Country"
-                margin="dense"
-                name="country"
-                onChange={handleChange}
-                required
-                value={values.country}
-                variant="outlined"
-              />
-            </Grid>
           </Grid>
         </CardContent>
         <Divider />
         <CardActions>
-          <Button color="primary" variant="contained">
+          <Button
+            onClick={handleUpdateUser}
+            color="primary"
+            variant="contained"
+          >
             Save details
           </Button>
         </CardActions>
