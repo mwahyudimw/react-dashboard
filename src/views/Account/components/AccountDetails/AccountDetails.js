@@ -14,6 +14,7 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 import { apiDashManage } from "../../../../api/api";
+import Swal from "sweetalert2";
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -23,6 +24,7 @@ const AccountDetails = (props) => {
   const { className, ...rest } = props;
   const classes = useStyles();
   const [dataUser, setDataUser] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [values, setValues] = useState({
     username: "",
     email: "",
@@ -46,9 +48,9 @@ const AccountDetails = (props) => {
     setDataUser(JSON.parse(localStorage.getItem("data")));
   }, []);
 
-  useEffect(() => {
-    console.log("dataUsersssssss", dataUser);
-  }, [dataUser]);
+  // useEffect(() => {
+  //   console.log("dataUsersssssss", dataUser);
+  // }, [dataUser]);
 
   const handleGetDataUser = () => {
     axios({
@@ -57,12 +59,11 @@ const AccountDetails = (props) => {
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
-    }).then((res) => {
-      console.log("dataUser", res);
     });
   };
 
   const handleUpdateUser = () => {
+    setLoading(true);
     axios({
       method: "put",
       url: `${apiDashManage + "update/user"}`,
@@ -70,10 +71,20 @@ const AccountDetails = (props) => {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
       data: values,
-    }).then((res) => {
-      localStorage.setItem("data", JSON.stringify(res.data.user));
-      console.log("update user", res);
-    });
+    })
+      .then((res) => {
+        localStorage.setItem("data", JSON.stringify(res.data.user));
+        setLoading(false);
+        Swal.fire("Good job!", "Update success", "success");
+      })
+      .catch((err) => {
+        setLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Check your connections",
+          text: "",
+        });
+      });
   };
 
   return (
@@ -116,7 +127,7 @@ const AccountDetails = (props) => {
             color="primary"
             variant="contained"
           >
-            Save details
+            {loading ? "loading..." : "Save details"}
           </Button>
         </CardActions>
       </form>

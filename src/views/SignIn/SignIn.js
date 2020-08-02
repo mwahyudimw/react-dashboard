@@ -14,6 +14,7 @@ import {
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import axios from "axios";
 import { apiDashManage } from "../../api/api";
+import Swal from "sweetalert2";
 
 const schema = {
   email: {
@@ -180,7 +181,6 @@ const SignIn = (props) => {
     axios
       .post(`${apiDashManage + "sign-in"}`, dataUsers)
       .then((res) => {
-        console.log(res, "MASUK");
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("data", JSON.stringify(res.data.user));
         setLoading(false);
@@ -188,6 +188,11 @@ const SignIn = (props) => {
       })
       .catch((err) => {
         setLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Check your connections",
+          text: "",
+        });
       });
   };
   const hasError = (field) =>

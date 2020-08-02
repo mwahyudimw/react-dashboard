@@ -18,6 +18,7 @@ import {
 const Routes = () => {
   return (
     <Switch>
+      <Redirect exact from="/" to="/dashboard" />
       <RouteWithLayout
         component={DashboardView}
         exact
@@ -72,7 +73,7 @@ const Routes = () => {
         layout={MinimalLayout}
         path="/not-found"
       />
-      <Redirect to="/dashboard" />
+      <Redirect to="/not-found" />
     </Switch>
   );
 };

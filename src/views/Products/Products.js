@@ -96,10 +96,6 @@ export default function Categeory() {
     handleGetProduct();
   }, []);
 
-  useEffect(() => {
-    console.log("data categ", dataCategory);
-  }, [dataCategory]);
-
   // const handleGetCategory = () => {
   //   setLoading((loading) => ({
   //     ...loading,
@@ -145,7 +141,6 @@ export default function Categeory() {
       },
     })
       .then((res) => {
-        console.log("product", res.data.products);
         setDataProduct(res.data.products);
         setLoading((loading) => ({
           ...loading,
@@ -216,7 +211,6 @@ export default function Categeory() {
                     data: newData,
                   })
                     .then((res) => {
-                      console.log("ADD DATA", res);
                       Swal.fire("Added Success", "", "success");
                       handleGetProduct();
                       setLoading((loading) => ({
@@ -267,7 +261,6 @@ export default function Categeory() {
                         },
                       })
                         .then((res) => {
-                          console.log("EDIT DATA", res);
                           Swal.fire("Update Success", "", "success");
                           handleGetProduct();
                           setLoading((loading) => ({
@@ -311,7 +304,6 @@ export default function Categeory() {
                       data: oldData,
                     })
                       .then((res) => {
-                        console.log("Delete DATA", res);
                         Swal.fire("Delete Success", "", "success");
                         handleGetProduct();
                         setLoading((loading) => ({

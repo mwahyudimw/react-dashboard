@@ -63,7 +63,6 @@ const TotalProduct = (props) => {
       },
     })
       .then((res) => {
-        console.log("product dashboard", res);
         const dataProduct = res.data.products;
         setJumlahProduct(dataProduct.length);
         setLoading(false);

@@ -14,16 +14,7 @@ const RouteWithLayout = (props) => {
             <Component {...matchProps} />
           </Layout>
         ) : (
-          <Layout>
-            <Redirect
-              to={{
-                pathname: "/sign-in",
-                state: {
-                  from: props.location,
-                },
-              }}
-            />
-          </Layout>
+          <Redirect to="/sign-in" />
         )
       }
     />

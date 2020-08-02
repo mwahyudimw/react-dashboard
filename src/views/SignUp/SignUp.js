@@ -193,13 +193,11 @@ const SignUp = (props) => {
     axios
       .post(`${apiDashManage + "sign-up"}`, dataUsers)
       .then((res) => {
-        console.log("respon", res);
         setLoading(false);
         Swal.fire("Good job!", "Registration successful", "success");
         history.push("/sign-in");
       })
       .catch((err) => {
-        console.log("err", err);
         setLoading(false);
         Swal.fire({
           icon: "error",

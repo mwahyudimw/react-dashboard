@@ -15,6 +15,7 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 import { apiDashManage } from "../../../../api/api";
+import Swal from "sweetalert2";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -40,10 +41,12 @@ const AccountProfile = (props) => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
+  const [loading, setLoading] = React.useState(false);
   const DataUser = JSON.parse(localStorage.getItem("data"));
-  const [picture, setPicture] = useState(
-    `http://dashmanage.herokuapp.com/${DataUser.picture}`
-  );
+  const [picture, setPicture] = useState({
+    picture: `http://dashmanage.herokuapp.com/${DataUser.picture}`,
+    image: "",
+  });
   const [user, setUser] = useState({
     name: "",
     avatar: "",
@@ -59,59 +62,82 @@ const AccountProfile = (props) => {
   }, [user]);
 
   const updateImage = () => {
+    setLoading(true);
+    const formdata = new FormData();
+    formdata.append("image", picture.image);
     axios({
       method: "put",
       url: `${apiDashManage + "update/pict-user"}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
-      data: {
-        picture: picture,
-        id: DataUser._id,
-      },
-    }).then((res) => {
-      console.log("res update image", res);
-    });
+      data: formdata,
+    })
+      .then((res) => {
+        setLoading(false);
+        Swal.fire("Good job!", "Update success", "success");
+        localStorage.setItem("data", JSON.stringify(res.data.result));
+      })
+      .catch((err) => {
+        setLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Check your connections",
+          text: "",
+        });
+      });
   };
 
-  const onImageChange = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      let reader = new FileReader();
-      reader.onload = (e) => {
-        setPicture(e.target.result);
-      };
-      reader.readAsDataURL(event.target.files[0]);
-    }
+  const onImageChange = (e) => {
+    e.preventDefault();
+    let reader = new FileReader();
+    let file = e.target.files[0];
+
+    reader.onloadend = () => {
+      // this.setState({
+      //   img: file,
+      //   foto: reader.result
+      // })
+      setPicture((picture) => ({
+        ...picture,
+        image: file,
+        picture: reader.result,
+      }));
+    };
+
+    reader.readAsDataURL(file);
   };
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
-      <CardContent>
-        <div className={classes.details}>
-          <div>
-            <Typography gutterBottom variant="h2">
-              {user.username}
-            </Typography>
+      <form id="myform" encType="multipart/form-data">
+        <CardContent>
+          <div className={classes.details}>
+            <div>
+              <Typography gutterBottom variant="h2">
+                {user.username}
+              </Typography>
+            </div>
+            <Avatar className={classes.avatar} src={picture.picture} />
+            <input
+              style={{ position: "absolute", marginTop: "40px" }}
+              type="file"
+              onChange={onImageChange}
+              name="image"
+            />
           </div>
-          <Avatar className={classes.avatar} src={picture} />
-          <input
-            style={{ position: "absolute", marginTop: "40px" }}
-            type="file"
-            onChange={onImageChange}
-          />
-        </div>
-      </CardContent>
-      <Divider />
-      <CardActions>
-        <Button
-          onClick={updateImage}
-          className={classes.uploadButton}
-          color="primary"
-          variant="text"
-        >
-          Upload picture
-        </Button>
-        <Button variant="text">Remove picture</Button>
-      </CardActions>
+        </CardContent>
+        <Divider />
+        <CardActions>
+          <Button
+            onClick={updateImage}
+            className={classes.uploadButton}
+            color="primary"
+            variant="text"
+          >
+            {loading ? "loading..." : "Upload picture"}
+          </Button>
+        </CardActions>
+      </form>
     </Card>
   );
 };

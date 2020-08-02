@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, Redirect } from "react-router-dom";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/styles";
@@ -43,9 +43,14 @@ const Topbar = (props) => {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
     }).then((res) => {
-      console.log("respon get CATEGORY", res.data.categories);
       setCategoryContext(res.data.categories);
     });
+  };
+
+  const logout = () => {
+    localStorage.removeItem("data");
+    localStorage.removeItem("token");
+    window.location.reload();
   };
 
   return (
@@ -65,7 +70,11 @@ const Topbar = (props) => {
               <TranslateIcon />
             </Badge>
           </IconButton>
-          <IconButton className={classes.signOutButton} color="inherit">
+          <IconButton
+            onClick={logout}
+            className={classes.signOutButton}
+            color="inherit"
+          >
             <InputIcon />
           </IconButton>
         </Hidden>
