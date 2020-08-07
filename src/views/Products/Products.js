@@ -34,13 +34,24 @@ export default function Categeory() {
     update: false,
     delete: false,
   });
+  const [imagesUrl, setImageUrl] = useState("");
+  const onImageChange = (e) => {
+    setImageUrl(e.target.files[0]);
+  };
+
   const [state, setState] = React.useState({
     columns: [
       { title: "Name", field: "name" },
       { title: "Price", field: "price" },
       { title: "Stock", field: "stock" },
       { title: "Description", field: "description" },
-      { title: "Image", field: "imageUrl" },
+      {
+        title: "Image",
+        field: "imageUrl",
+        editComponent: () => (
+          <input type="file" name="imageUrl" onChange={onImageChange} />
+        ),
+      },
       {
         title: "Category",
         field: "categoryId",
@@ -96,38 +107,6 @@ export default function Categeory() {
     handleGetProduct();
   }, []);
 
-  // const handleGetCategory = () => {
-  //   setLoading((loading) => ({
-  //     ...loading,
-  //     get: true,
-  //   }));
-  //   axios({
-  //     method: "get",
-  //     url: `${apiDashManage + "category"}`,
-  //     headers: {
-  //       Authorization: "Bearer " + localStorage.getItem("token"),
-  //     },
-  //   })
-  //     .then((res) => {
-  //       console.log("respon get category", res.data.categories);
-  //       setDataCategory(res.data.categories);
-  //       setLoading((loading) => ({
-  //         ...loading,
-  //         get: false,
-  //       }));
-  //     })
-  //     .catch((err) => {
-  //       setLoading((loading) => ({
-  //         ...loading,
-  //         get: false,
-  //       }));
-  //       Swal.fire({
-  //         icon: "error",
-  //         title: "Check your connections",
-  //         text: "",
-  //       });
-  //     });
-  // };
   const handleGetProduct = () => {
     setLoading((loading) => ({
       ...loading,
@@ -141,6 +120,7 @@ export default function Categeory() {
       },
     })
       .then((res) => {
+        console.log("coba", res.data.products);
         setDataProduct(res.data.products);
         setLoading((loading) => ({
           ...loading,
@@ -201,16 +181,27 @@ export default function Categeory() {
                 }));
                 resolve();
                 setState((prevState) => {
+                  const formData = new FormData();
+                  formData.append("imageUrl", imagesUrl, imagesUrl.name);
                   const data = [...prevState.data];
+                  console.log("form adata", formData);
                   axios({
                     method: "post",
                     url: `${apiDashManage + "product"}`,
                     headers: {
                       Authorization: "Bearer " + localStorage.getItem("token"),
                     },
-                    data: newData,
+                    data: {
+                      name: newData.name,
+                      price: newData.price,
+                      stock: newData.stock,
+                      description: newData.description,
+                      imageUrl: formData.get("imageUrl"),
+                      categoryId: newData.categoryId,
+                    },
                   })
                     .then((res) => {
+                      console.log("tambah", res);
                       Swal.fire("Added Success", "", "success");
                       handleGetProduct();
                       setLoading((loading) => ({
