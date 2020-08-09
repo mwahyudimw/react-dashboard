@@ -182,7 +182,12 @@ export default function Categeory() {
                 resolve();
                 setState((prevState) => {
                   const formData = new FormData();
-                  formData.append("imageUrl", imagesUrl, imagesUrl.name);
+                  formData.append("image", imagesUrl);
+                  formData.append("name", newData.name);
+                  formData.append("price", newData.price);
+                  formData.append("stock", newData.stock);
+                  formData.append("description", newData.description);
+                  formData.append("categoryId", newData.categoryId);
                   const data = [...prevState.data];
                   console.log("form adata", formData);
                   axios({
@@ -191,14 +196,7 @@ export default function Categeory() {
                     headers: {
                       Authorization: "Bearer " + localStorage.getItem("token"),
                     },
-                    data: {
-                      name: newData.name,
-                      price: newData.price,
-                      stock: newData.stock,
-                      description: newData.description,
-                      imageUrl: formData.get("imageUrl"),
-                      categoryId: newData.categoryId,
-                    },
+                    data: formData,
                   })
                     .then((res) => {
                       console.log("tambah", res);
@@ -343,7 +341,11 @@ export default function Categeory() {
                   marginTop: "10px",
                   marginBottom: "10px",
                 }}
-                src="https://images.unsplash.com/photo-1495231916356-a86217efff12?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=676&q=80"
+                src={
+                  rowData.imageUrl === "No picture"
+                    ? "https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg"
+                    : `http://dashmanage.herokuapp.com/${rowData.imageUrl}`
+                }
               />
             );
           }}
