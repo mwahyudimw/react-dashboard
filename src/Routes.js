@@ -16,7 +16,7 @@ import {
   SignIn as SignInView,
   VerifyEmail as VerifyEmailView,
   ResetPass as ResetPassView,
-  NotFound as NotFoundView,
+  Article as ArticleView,
 } from "./views";
 
 const Routes = () => {
@@ -66,6 +66,12 @@ const Routes = () => {
         path="/account"
       />
       <RouteWithLayout
+        component={ArticleView}
+        exact
+        layout={MainLayout}
+        path="/article"
+      />
+      <RouteWithLayout
         component={SettingsView}
         exact
         layout={MainLayout}
@@ -94,12 +100,6 @@ const Routes = () => {
         exact
         layout={MinimalLayout}
         path="/reset-pass/:id"
-      />
-      <RouteWithLayout
-        component={NotFoundView}
-        exact
-        layout={MinimalLayout}
-        path="/not-found"
       />
       <Redirect to="/not-found" />
     </Switch>
