@@ -50,6 +50,7 @@ function UsersTable() {
               <img
                 style={{ height: 36, borderRadius: "50%" }}
                 src={`http://dashmanage.herokuapp.com/${rowData.picture}`}
+                alt="user"
               />
             ),
           },

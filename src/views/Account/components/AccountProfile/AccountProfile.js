@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
-import moment from "moment";
 import { makeStyles } from "@material-ui/styles";
 import {
   Card,
@@ -11,7 +10,6 @@ import {
   Typography,
   Divider,
   Button,
-  LinearProgress,
 } from "@material-ui/core";
 import axios from "axios";
 import { apiDashManage } from "../../../../api/api";
@@ -63,8 +61,11 @@ const AccountProfile = (props) => {
 
   const updateImage = () => {
     setLoading(true);
+    console.log(picture.image);
     const formdata = new FormData();
     formdata.append("image", picture.image);
+
+    console.log(formdata);
     axios({
       method: "put",
       url: `${apiDashManage + "update/pict-user"}`,
@@ -94,10 +95,6 @@ const AccountProfile = (props) => {
     let file = e.target.files[0];
 
     reader.onloadend = () => {
-      // this.setState({
-      //   img: file,
-      //   foto: reader.result
-      // })
       setPicture((picture) => ({
         ...picture,
         image: file,

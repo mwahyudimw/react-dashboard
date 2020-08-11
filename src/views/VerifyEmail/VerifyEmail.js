@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link as RouterLink, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import validate from "validate.js";
 import { makeStyles } from "@material-ui/styles";
@@ -8,34 +8,21 @@ import {
   Button,
   IconButton,
   TextField,
-  Link,
   Typography,
 } from "@material-ui/core";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import axios from "axios";
-import { apiDashManage } from "../../api/api";
 import Swal from "sweetalert2";
-
-const schema = {
-  email: {
-    presence: { allowEmpty: false, message: "is required" },
-    email: true,
-    length: {
-      maximum: 64,
-    },
-  },
-  password: {
-    presence: { allowEmpty: false, message: "is required" },
-    length: {
-      maximum: 128,
-    },
-  },
-};
 
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.default,
     height: "100%",
+  },
+  button: {
+    margin: " 1vh 1vh 1vh 0vh",
+    background: "teal",
+    color: "#fff",
   },
   grid: {
     height: "100%",
@@ -121,15 +108,16 @@ const useStyles = makeStyles((theme) => ({
   textField: {
     marginTop: theme.spacing(2),
   },
-  signInButton: {
+  VerifyEmailButton: {
     margin: theme.spacing(2, 0),
   },
 }));
 
-const SignIn = (props) => {
+const VerifyEmail = (props) => {
   const { history } = props;
 
   const classes = useStyles();
+
   const [loading, setLoading] = useState(false);
   const [formState, setFormState] = useState({
     isValid: false,
@@ -139,7 +127,7 @@ const SignIn = (props) => {
   });
 
   useEffect(() => {
-    const errors = validate(formState.values, schema);
+    const errors = validate(formState.values);
 
     setFormState((formState) => ({
       ...formState,
@@ -171,30 +159,37 @@ const SignIn = (props) => {
     }));
   };
 
-  const handleSignIn = (event) => {
+  const handleVerifyEmail = (event) => {
     event.preventDefault();
+
     setLoading(true);
-    const dataUsers = {
-      password: formState.values.password,
-      email: formState.values.email,
-    };
+
+    const value = formState.values;
+
     axios
-      .post(`${apiDashManage + "sign-in"}`, dataUsers)
+      .post(`https://dashmanage.herokuapp.com/api/v1/reset-password`, value)
+
       .then((res) => {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("data", JSON.stringify(res.data.user));
+        console.log("response", res);
         setLoading(false);
-        history.push("/dashboard");
+        Swal.fire(
+          "Success!",
+          "The token has been sent to your email, check your Email now !",
+          "success"
+        );
       })
+
       .catch((err) => {
+        console.error("error", err);
         setLoading(false);
         Swal.fire({
           icon: "error",
-          title: "Check your connections",
-          text: "",
+          title: "Oops...",
+          text: "Opps, the email you entered is not in the database",
         });
       });
   };
+
   const hasError = (field) =>
     formState.touched[field] && formState.errors[field] ? true : false;
 
@@ -227,9 +222,12 @@ const SignIn = (props) => {
               </IconButton>
             </div>
             <div className={classes.contentBody}>
-              <form className={classes.form} onSubmit={handleSignIn}>
+              <form className={classes.form} onSubmit={handleVerifyEmail}>
                 <Typography className={classes.title} variant="h2">
-                  Sign in
+                  Verify Email
+                </Typography>
+                <Typography color="textSecondary" gutterBottom>
+                  Verify your email to reset your password
                 </Typography>
                 <TextField
                   className={classes.textField}
@@ -238,53 +236,24 @@ const SignIn = (props) => {
                   helperText={
                     hasError("email") ? formState.errors.email[0] : null
                   }
-                  label="Email address"
+                  label="Verify your email"
                   name="email"
                   onChange={handleChange}
                   type="text"
                   value={formState.values.email || ""}
                   variant="outlined"
                 />
-                <TextField
-                  className={classes.textField}
-                  error={hasError("password")}
-                  fullWidth
-                  helperText={
-                    hasError("password") ? formState.errors.password[0] : null
-                  }
-                  label="Password"
-                  name="password"
-                  onChange={handleChange}
-                  type="password"
-                  value={formState.values.password || ""}
-                  variant="outlined"
-                />
-                <Button
-                  className={classes.signInButton}
-                  color="primary"
-                  disabled={!formState.isValid}
-                  fullWidth
-                  size="large"
-                  type="submit"
-                  variant="contained"
-                >
-                  {loading ? "loading..." : "Sign in now"}
-                </Button>
-                <Typography color="textSecondary" variant="body1">
-                  Don't have an account?{" "}
-                  <Link component={RouterLink} to="/sign-up" variant="h6">
-                    Sign up
-                  </Link>
-                  <Typography>
-                    <Link
-                      component={RouterLink}
-                      to="/verify-email"
-                      variant="h6"
-                    >
-                      Forgot password ?
-                    </Link>
-                  </Typography>
-                </Typography>
+                <Grid item>
+                  <Button
+                    className={classes.button}
+                    onClick={handleVerifyEmail}
+                    size="large"
+                    variant="contained"
+                    disabled={loading}
+                  >
+                    {loading ? "loading ..." : "Verify"}
+                  </Button>
+                </Grid>
               </form>
             </div>
           </div>
@@ -294,8 +263,8 @@ const SignIn = (props) => {
   );
 };
 
-SignIn.propTypes = {
+VerifyEmail.propTypes = {
   history: PropTypes.object,
 };
 
-export default withRouter(SignIn);
+export default withRouter(VerifyEmail);

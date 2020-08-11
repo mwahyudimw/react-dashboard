@@ -19,9 +19,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Categeory() {
   const classes = useStyles();
   const [categoryContext, setCategoryContext] = useContext(CategoryContext);
-  const [dataCategory, setDataCategory] = useState([]);
   const [dataProduct, setDataProduct] = useState([]);
-  const [id, setId] = useState(null);
 
   var obj = categoryContext.reduce(function(acc, cur, i) {
     acc[cur._id] = cur.name;
@@ -103,7 +101,6 @@ export default function Categeory() {
   });
 
   useEffect(() => {
-    // handleGetCategory();
     handleGetProduct();
   }, []);
 
@@ -346,6 +343,7 @@ export default function Categeory() {
                     ? "https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg"
                     : `http://dashmanage.herokuapp.com/${rowData.imageUrl}`
                 }
+                alt="products"
               />
             );
           }}

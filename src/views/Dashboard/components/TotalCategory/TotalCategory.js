@@ -5,7 +5,6 @@ import { makeStyles } from "@material-ui/styles";
 import { Card, CardContent, Grid, Typography, Avatar } from "@material-ui/core";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import CategoryIcon from "@material-ui/icons/Category";
-import color from "@material-ui/core/colors/amber";
 import axios from "axios";
 import { apiDashManage } from "../../../../api/api";
 

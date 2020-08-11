@@ -8,11 +8,15 @@ import {
   Products as ProductsView,
   Category as CategoryView,
   UserList as UserListView,
+  Bank as BankView,
+  Sale as SaleView,
   Account as AccountView,
   Settings as SettingsView,
   SignUp as SignUpView,
   SignIn as SignInView,
-  NotFound as NotFoundView,
+  Article as ArticleView,
+  ResetPass,
+  VerifyEmail,
 } from "./views";
 
 const Routes = () => {
@@ -44,10 +48,28 @@ const Routes = () => {
         path="/category"
       />
       <RouteWithLayout
+        component={BankView}
+        exact
+        layout={MainLayout}
+        path="/bank"
+      />
+      <RouteWithLayout
+        component={SaleView}
+        exact
+        layout={MainLayout}
+        path="/sale"
+      />
+      <RouteWithLayout
         component={AccountView}
         exact
         layout={MainLayout}
         path="/account"
+      />
+      <RouteWithLayout
+        component={ArticleView}
+        exact
+        layout={MainLayout}
+        path="/article"
       />
       <RouteWithLayout
         component={SettingsView}
@@ -67,11 +89,17 @@ const Routes = () => {
         layout={MinimalLayout}
         path="/sign-in"
       />
-      <RouteWithLayout
-        component={NotFoundView}
+      <Route
+        component={VerifyEmail}
         exact
         layout={MinimalLayout}
-        path="/not-found"
+        path="/verify-email"
+      />
+      <Route
+        component={ResetPass}
+        exact
+        layout={MinimalLayout}
+        path="/reset-pass/:id"
       />
       <Redirect to="/not-found" />
     </Switch>

@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Categeory() {
+export default function Category() {
   const classes = useStyles();
   const [categoryContext, setCategoryContext] = useContext(CategoryContext);
   const [nameCategory, setNameCategory] = useState([]);
