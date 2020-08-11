@@ -28,11 +28,11 @@ const Profile = (props) => {
 
   const DataUser = JSON.parse(localStorage.getItem("data"));
 
-  // const user = {
-  //   name: DataUser.username,
-  //   avatar: `http://dashmanage.herokuapp.com/${DataUser.picture}`,
-  //   bio: DataUser.role,
-  // };
+  const user = {
+    name: DataUser.username,
+    avatar: `http://dashmanage.herokuapp.com/${DataUser.picture}`,
+    bio: DataUser.role,
+  };
 
   return (
     <div {...rest} className={clsx(classes.root, className)}>
@@ -40,13 +40,13 @@ const Profile = (props) => {
         alt="Person"
         className={classes.avatar}
         component={RouterLink}
-        // src={user.avatar}
+        src={user.avatar}
         to="/settings"
       />
       <Typography className={classes.name} variant="h4">
-        {/* {user.name} */}
+        {user.name}
       </Typography>
-      {/* <Typography variant="body2">{user.bio}</Typography> */}
+      <Typography variant="body2">{user.bio}</Typography>
     </div>
   );
 };
