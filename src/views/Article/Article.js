@@ -1,4 +1,5 @@
 import React from "react";
+import { ArticleProvider } from "../../context/articleContext";
 import ManageArticle from "./components/ManageArticle";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -8,7 +9,7 @@ import Item from "./components/Item";
 
 const Article = () => {
   return (
-    <>
+    <ArticleProvider>
       <ManageArticle />
       <Card>
         <CardHeader subheader="Your Article" title="Article" />
@@ -17,7 +18,7 @@ const Article = () => {
           <Item />
         </CardContent>
       </Card>
-    </>
+    </ArticleProvider>
   );
 };
 

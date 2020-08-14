@@ -8,15 +8,23 @@ import {
   Divider,
   Button,
   TextField,
-  Typography,
+  Avatar,
 } from "@material-ui/core";
-import Swal from "sweetalert2";
+import { apiDashManage } from "../../../api/api";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import CreatableSelect from "react-select/creatable";
+import makeAnimated from "react-select/animated";
 import axios from "axios";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -30,19 +38,58 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
+
+  details: {
+    display: "flex",
+  },
+  avatar: {
+    marginLeft: "auto",
+    height: 110,
+    width: 100,
+    flexShrink: 0,
+    flexGrow: 0,
+  },
+
+  uploadButton: {
+    marginRight: theme.spacing(2),
+  },
 }));
+
+const customStyles = {
+  container: () => ({
+    marginBottom: "1rem",
+    marginTop: "1rem",
+  }),
+  menu: () => ({
+    width: "100%",
+  }),
+};
+
+const animatedComponents = makeAnimated();
 
 export default function Edit({ open, handleClose }) {
   const classes = useStyles();
+  const [loadArticle, setLoadArtile] = useState({
+    loadingArticle: false,
+    editThumbnail: false,
+  });
   const [values, setValues] = useState({
     title: "",
     tags: [],
     description: "",
-    image: "",
+    image: null,
+    imgrequest: null,
+    picture: "https://placehold.it/500x600",
     figurethumbnails: "",
   });
-  const [loading, setLoading] = useState(true);
-  const [loadArticle, setLoadArtile] = useState(false);
+
+  const [state, setState] = React.useState({
+    open: false,
+    title: "",
+    severity: "",
+    vertical: "top",
+    horizontal: "right",
+  });
 
   const handleChange = (event) => {
     setValues({
@@ -51,132 +98,262 @@ export default function Edit({ open, handleClose }) {
     });
   };
 
+  const handleTags = (newValue) => {
+    setValues((values) => ({
+      ...values,
+      tags: newValue,
+    }));
+  };
+
   const onImageChange = (e) => {
     e.preventDefault();
     let reader = new FileReader();
     let file = e.target.files[0];
 
     reader.onloadend = () => {
-      setLoading(false);
       setValues((values) => ({
         ...values,
         image: file,
+        picture: reader.result,
         figurethumbnails: file.name,
-        base64: reader.result,
       }));
     };
 
     reader.readAsDataURL(file);
   };
 
-  const addArticle = (e) => {
-    e.preventDefault();
-    setLoadArtile(true);
-
-    const formData = new FormData();
-    formData.append("title", values.title);
-    formData.append("tags", values.tags);
-    formData.append("description", values.description);
-    formData.append("image", values.image);
+  const addImage = () => {
+    setLoadArtile((loadingArticle) => ({
+      ...loadingArticle,
+      editThumbnail: true,
+    }));
+    const formdata = new FormData();
+    formdata.append("image", values.image);
 
     axios({
-      method: "put",
-      url: `http://dashmanage.herokuapp.com/api/v1/article`,
+      method: "post",
+      url: `${apiDashManage}image`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      data: formData,
+      data: formdata,
     })
       .then((res) => {
-        setLoadArtile(false);
-        Swal.fire("Success !", "Article has been edited", "success");
-        console.log(res);
+        setLoadArtile((loadingArticle) => ({
+          ...loadingArticle,
+          editThumbnail: false,
+        }));
+        setState((state) => ({
+          ...state,
+          open: true,
+          title: "Good job success !",
+          severity: "success",
+        }));
+        setValues((values) => ({
+          ...values,
+          imgrequest: res.data.thumbnail,
+        }));
       })
       .catch((err) => {
-        setLoadArtile(false);
-        Swal.fire({
-          icon: "error",
-          title: "Check your connections",
-          text: "",
-        });
-        console.log(err);
+        setLoadArtile((loadingArticle) => ({
+          ...loadingArticle,
+          editThumbnail: false,
+        }));
+        setState((state) => ({
+          ...state,
+          open: true,
+          title: "Check your connection !",
+          severity: "error",
+        }));
       });
   };
+
+  const editArticle = (e) => {
+    e.preventDefault();
+    setLoadArtile((loadArticle) => ({
+      ...loadArticle,
+      loadingArticle: true,
+    }));
+
+    const dataArticle = {
+      title: values.title,
+      tags: values.tags,
+      thumbnail: values.imgrequest,
+      description: values.description,
+    };
+
+    axios({
+      method: "put",
+      url: `${apiDashManage}article`,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      data: dataArticle,
+    })
+      .then((res) => {
+        setLoadArtile((loadArticle) => ({
+          ...loadArticle,
+          loadingArticle: false,
+        }));
+        setState((state) => ({
+          ...state,
+          open: true,
+          title: "Article has been edited !",
+          severity: "success",
+        }));
+        setValues((values) => ({
+          ...values,
+          title: "",
+          tags: [],
+          description: "",
+          image: "",
+          picture: "",
+          imgrequest: null,
+          figurethumbnails: "",
+        }));
+      })
+      .catch((err) => {
+        setLoadArtile((loadArticle) => ({
+          ...loadArticle,
+          loadingArticle: false,
+        }));
+        setState((state) => ({
+          ...state,
+          open: true,
+          title: "Check your connection !",
+          severity: "error",
+        }));
+        setValues((values) => ({
+          ...values,
+          title: "",
+          tags: [],
+          description: "",
+          image: "",
+          picture: "",
+          imgrequest: null,
+          figurethumbnails: "",
+        }));
+      });
+  };
+
+  const { severity, title, vertical, horizontal } = state;
+  const { loadingArticle, editThumbnail } = loadArticle;
+
   return (
-    <Modal
-      aria-labelledby="transition-modal-title"
-      aria-describedby="transition-modal-description"
-      className={classes.modal}
-      open={open}
-      onClose={handleClose}
-      closeAfterTransition
-      BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500,
-      }}
-    >
-      <Fade in={open}>
-        <Card>
-          <CardHeader subheader="Edit your Article" title="Article" />
-          <Divider />
-          <CardContent>
-            <TextField
-              fullWidth
-              label="Title"
-              name="title"
-              onChange={handleChange}
-              type="text"
-              value={values.title}
-              variant="outlined"
-            />
-            <TextField
-              fullWidth
-              label="Tags"
-              name="tags"
-              onChange={handleChange}
-              style={{ marginTop: "1rem", marginBottom: "1rem" }}
-              type="text"
-              value={values.tags}
-              variant="outlined"
-            />
-            <CKEditor
-              editor={ClassicEditor}
-              onChange={(event, editor) => {
-                const data = editor.getData();
-                setValues((values) => ({
-                  ...values,
-                  description: data,
-                }));
-              }}
-            />
-            <form encType="multipart/form-data">
+    <>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={state.open}
+        autoHideDuration={6000}
+        onClose={() =>
+          setState((state) => ({
+            ...state,
+            open: false,
+          }))
+        }
+        key={vertical + horizontal}
+      >
+        <Alert
+          onClose={() =>
+            setState((state) => ({
+              ...state,
+              open: false,
+            }))
+          }
+          severity={severity}
+        >
+          {title}
+        </Alert>
+      </Snackbar>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <Card>
+            <CardHeader subheader="Edit your Article" title="Article" />
+            <Divider />
+            <form id="myform" encType="multipart/form-data">
+              <CardContent>
+                <div className={classes.details}>
+                  <Avatar className={classes.avatar} src={values.picture} />
+                  <input
+                    style={{
+                      position: "absolute",
+                      marginTop: "40px",
+                      cursor: "pointer",
+                    }}
+                    type="file"
+                    onChange={onImageChange}
+                    name="image"
+                  />
+                </div>
+              </CardContent>
+              <Divider />
+              <CardActions>
+                <Button
+                  onClick={addImage}
+                  className={classes.uploadButton}
+                  disabled={editThumbnail}
+                  color="primary"
+                  variant="text"
+                >
+                  {editThumbnail ? "Loading..." : "Edit Thumbnail"}
+                </Button>
+              </CardActions>
+            </form>
+
+            <CardContent>
+              <TextField
+                fullWidth
+                label="Title"
+                name="title"
+                onChange={handleChange}
+                type="text"
+                value={values.title}
+                variant="outlined"
+              />
+
+              <CreatableSelect
+                isMulti
+                onChange={handleTags}
+                components={animatedComponents}
+                styles={customStyles}
+                placeholder="Add more tags..."
+              />
+              <CKEditor
+                editor={ClassicEditor}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  setValues((values) => ({
+                    ...values,
+                    description: data,
+                  }));
+                }}
+              />
+            </CardContent>
+            <Divider />
+            <CardActions style={{ justifyContent: "center" }}>
               <Button
                 color="primary"
                 variant="outlined"
-                component="label"
-                style={{ marginTop: "1rem" }}
+                onClick={editArticle}
+                disabled={loadingArticle}
               >
-                Upload Thumbnail
-                <input
-                  type="file"
-                  name="image"
-                  style={{ display: "none" }}
-                  onChange={onImageChange}
-                />
+                {loadingArticle ? "Loading ..." : "Edit Article"}
               </Button>
-              <Typography variant="body1" style={{ marginTop: 25 }}>
-                {loading ? "No file choosen" : values.figurethumbnails}
-              </Typography>
-            </form>
-          </CardContent>
-          <Divider />
-          <CardActions style={{ justifyContent: "center" }}>
-            <Button color="primary" variant="outlined" onClick={addArticle}>
-              {loadArticle ? "Loading ..." : "Edit Article"}
-            </Button>
-          </CardActions>
-        </Card>
-      </Fade>
-    </Modal>
+            </CardActions>
+          </Card>
+        </Fade>
+      </Modal>
+    </>
   );
 }

@@ -57,7 +57,7 @@ const AccountProfile = (props) => {
       username: DataUser.username,
       avatar: `http://dashmanage.herokuapp.com/${DataUser.picture}`,
     }));
-  }, [user]);
+  }, []);
 
   const updateImage = () => {
     setLoading(true);
@@ -116,7 +116,11 @@ const AccountProfile = (props) => {
             </div>
             <Avatar className={classes.avatar} src={picture.picture} />
             <input
-              style={{ position: "absolute", marginTop: "40px" }}
+              style={{
+                position: "absolute",
+                marginTop: "40px",
+                cursor: "pointer",
+              }}
               type="file"
               onChange={onImageChange}
               name="image"
