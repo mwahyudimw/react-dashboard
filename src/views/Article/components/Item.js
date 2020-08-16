@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { red } from "@material-ui/core/colors";
-import { apiDashManage } from "../../../api/api";
-import { ArticleContext } from "../../../context/articleContext";
+import { Consumer } from "../../../context/articleContext";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import Card from "@material-ui/core/Card";
@@ -17,7 +16,6 @@ import IconButton from "@material-ui/core/IconButton";
 import Container from "@material-ui/core/Container";
 import CreateIcon from "@material-ui/icons/Create";
 import Button from "@material-ui/core/Button";
-import axios from "axios";
 import moment from "moment";
 import Edit from "./Edit";
 
@@ -70,17 +68,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Item() {
   const classes = useStyles();
-  const [article, setArticle] = React.useContext(ArticleContext);
-  const [loading, setLoading] = React.useState(false);
-  const [state, setState] = React.useState({
-    loadArticle: true,
-    title: "",
-    severity: "",
-    open: false,
-    vertical: "top",
-    horizontal: "right",
-  });
-  const [open, setOpen] = React.useState(false);
+  const [isopen, setOpen] = React.useState(false);
+  const [id, setId] = React.useState("");
   const data = localStorage.getItem("data");
   const parse = JSON.parse(data);
 
@@ -89,153 +78,109 @@ export default function Item() {
     avatar: `http://dashmanage.herokuapp.com/${parse.picture}`,
   };
 
-  const fetchArticle = async () => {
-    const response = await axios({
-      method: "get",
-      url: `${apiDashManage}article`,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    const responseJson = await response;
-    if (responseJson.error) {
-      setState((state) => ({
-        ...state,
-        open: true,
-        title: "Your article empty , please make first article !",
-        severity: "info",
-      }));
-    } else {
-      setState((state) => ({
-        ...state,
-        open: false,
-        loadArticle: false,
-      }));
-      setArticle(responseJson.data.articles);
-    }
-  };
-
-  useEffect(() => {
-    fetchArticle();
-  }, []);
-
-  const deleteArticle = (id) => {
-    setLoading(true);
-    axios
-      .delete(`${apiDashManage}article/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      .then(() => {
-        setLoading(false);
-        setState((state) => ({
-          ...state,
-          open: true,
-          title: "Article has been deleted !",
-          severity: "success",
-        }));
-      })
-      .catch(() => {
-        setLoading(false);
-        setState((state) => ({
-          ...state,
-          open: true,
-          title: "Check your connection !",
-          severity: "error",
-        }));
-      });
-  };
-
-  const { title, severity, horizontal, vertical, loadArticle } = state;
-
   return (
     <div className={classes.root}>
       <Container>
-        <Snackbar
-          anchorOrigin={{ vertical, horizontal }}
-          open={state.open}
-          autoHideDuration={6000}
-          onClose={() =>
-            setState((state) => ({
-              ...state,
-              open: false,
-            }))
-          }
-          key={vertical + horizontal}
-        >
-          <Alert
-            onClose={() =>
-              setState((state) => ({
-                ...state,
-                open: false,
-              }))
-            }
-            severity={severity}
-          >
-            {title}
-          </Alert>
-        </Snackbar>
+        <Consumer>
+          {({
+            article,
+            snackbar,
+            loading,
+            onClose,
+            deleteArticle,
+            editArticle,
+          }) => {
+            const {
+              vertical,
+              horizontal,
+              open,
+              title,
+              severity,
+              loadArticle,
+            } = snackbar;
+            return (
+              <React.Fragment>
+                <Snackbar
+                  anchorOrigin={{ vertical, horizontal }}
+                  open={open}
+                  autoHideDuration={6000}
+                  onClose={onClose}
+                  key={vertical + horizontal}
+                >
+                  <Alert onClose={onClose} severity={severity}>
+                    {title}
+                  </Alert>
+                </Snackbar>
 
-        <Grid container spacing={3}>
-          {loadArticle
-            ? "loading.."
-            : article.map((tile) => {
-                return (
-                  <Grid className={classes.col} item xs={6} sm={3}>
-                    <Card key={tile._id} className={classes.cardLayout}>
-                      <CardHeader
-                        avatar={
-                          <Avatar
-                            aria-label="recipe"
-                            src={user.avatar}
-                            className={classes.avatar}
-                          />
-                        }
-                        action={
-                          <IconButton
-                            aria-label="settings"
-                            onClick={() => setOpen(true)}
-                          >
-                            <CreateIcon />
-                          </IconButton>
-                        }
-                        title={`${tile.title}`}
-                        subheader={moment(tile.createdAt).format("LLL")}
-                      />
-                      <CardMedia
-                        className={classes.media}
-                        image={`http://dashmanage.herokuapp.com/${tile.thumbnail.imageUrl}`}
-                        title={tile.title}
-                      />
+                <Grid container spacing={3}>
+                  {loadArticle
+                    ? "loading.."
+                    : article.map((tile) => {
+                        return (
+                          <Grid className={classes.col} item xs={6} sm={3}>
+                            <Card key={tile._id} className={classes.cardLayout}>
+                              <CardHeader
+                                avatar={
+                                  <Avatar
+                                    aria-label="recipe"
+                                    src={user.avatar}
+                                    className={classes.avatar}
+                                  />
+                                }
+                                action={
+                                  <IconButton
+                                    aria-label="settings"
+                                    onClick={() => {
+                                      setOpen(true)
+                                      setId(tile._id);
+                                    }}
+                                  >
+                                    <CreateIcon />
+                                  </IconButton>
+                                }
+                                title={`${tile.title}`}
+                                subheader={moment(tile.createdAt).format("LLL")}
+                              />
+                              <CardMedia
+                                className={classes.media}
+                                image={`http://dashmanage.herokuapp.com/${tile.thumbnail.imageUrl}`}
+                                title={tile.title}
+                              />
 
-                      <CardContent>
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          component="p"
-                          dangerouslySetInnerHTML={{
-                            __html: `${tile.description}`,
-                          }}
-                        />
-                      </CardContent>
-                      <CardActions disableSpacing>
-                        <Button
-                          variant="outlined"
-                          color="secondary"
-                          disabled={loading}
-                          onClick={() => deleteArticle(tile._id)}
-                        >
-                          {loading ? "Loading ..." : "DELETE"}
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                );
-              })}
-        </Grid>
-
-        <Edit open={open} handleClose={() => setOpen(false)} />
+                              <CardContent>
+                                <Typography
+                                  variant="body2"
+                                  color="textSecondary"
+                                  component="p"
+                                  dangerouslySetInnerHTML={{
+                                    __html: `${tile.description}`,
+                                  }}
+                                />
+                              </CardContent>
+                              <CardActions disableSpacing>
+                                <Button
+                                  variant="outlined"
+                                  color="secondary"
+                                  disabled={loading}
+                                  onClick={() => deleteArticle(tile._id)}
+                                >
+                                  {loading ? "Loading ..." : "DELETE"}
+                                </Button>
+                              </CardActions>
+                            </Card>
+                          </Grid>
+                        );
+                      })}
+                </Grid>
+                <Edit
+                  openModal={isopen}
+                  editArticle={() => editArticle(id)}
+                  handleClose={() => setOpen(false)}
+                />
+              </React.Fragment>
+            );
+          }}
+        </Consumer>
       </Container>
     </div>
   );
