@@ -137,7 +137,7 @@ export default function Edit({ openModal, handleClose, editArticle }) {
                         className={classes.uploadButton}
                         disabled={editThumbnail}
                         color="primary"
-                        variant="text"
+                        variant="contained"
                       >
                         {editThumbnail ? "Loading..." : "Edit Thumbnail"}
                       </Button>
@@ -150,7 +150,7 @@ export default function Edit({ openModal, handleClose, editArticle }) {
                       label="Title"
                       name="title"
                       onChange={handleChange}
-                      type="text"
+                      type="contained"
                       value={values.title}
                       variant="outlined"
                     />

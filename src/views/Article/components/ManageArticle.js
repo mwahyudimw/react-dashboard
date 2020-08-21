@@ -110,7 +110,7 @@ const ManageArticle = () => {
                     className={classes.uploadButton}
                     disabled={uploadThumbnail}
                     color="primary"
-                    variant="text"
+                    variant="contained"
                   >
                     {uploadThumbnail ? "Loading..." : "Upload Thumbnail"}
                   </Button>
@@ -141,10 +141,10 @@ const ManageArticle = () => {
                 />
               </CardContent>
               <Divider />
-              <CardActions style={{ justifyContent: "center" }}>
+              <CardActions>
                 <Button
                   color="primary"
-                  variant="outlined"
+                  variant="contained"
                   onClick={addArticle}
                   disabled={articleAdd}
                 >

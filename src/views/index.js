@@ -12,3 +12,7 @@ export { default as VerifyEmail } from "./VerifyEmail";
 export { default as Category } from "./Category";
 export { default as UserList } from "./UserList";
 export { default as Article } from "./Article";
+export { default as Galeri } from "./Galeri";
+export { default as HubungiKami } from "./HubungiKami";
+export { default as Pengiriman } from "./Pengiriman";
+export { default as TentangKami } from "./TentangKami";

@@ -131,7 +131,7 @@ export default function Item() {
                                   <IconButton
                                     aria-label="settings"
                                     onClick={() => {
-                                      setOpen(true)
+                                      setOpen(true);
                                       setId(tile._id);
                                     }}
                                   >
@@ -159,7 +159,7 @@ export default function Item() {
                               </CardContent>
                               <CardActions disableSpacing>
                                 <Button
-                                  variant="outlined"
+                                  variant="contained"
                                   color="secondary"
                                   disabled={loading}
                                   onClick={() => deleteArticle(tile._id)}

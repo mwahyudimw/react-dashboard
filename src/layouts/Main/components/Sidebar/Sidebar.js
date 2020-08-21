@@ -12,6 +12,10 @@ import CategoryIcon from "@material-ui/icons/Category";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import LoyaltyIcon from "@material-ui/icons/Loyalty";
 import AssignmentIcon from "@material-ui/icons/Assignment";
+import InfoIcon from "@material-ui/icons/Info";
+import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary";
+import AirportShuttleIcon from "@material-ui/icons/AirportShuttle";
+import ContactPhoneIcon from "@material-ui/icons/ContactPhone";
 import { Profile, SidebarNav } from "./components";
 
 const useStyles = makeStyles((theme) => ({
@@ -84,6 +88,28 @@ const Sidebar = (props) => {
       href: "/article",
       icon: <AssignmentIcon />,
     },
+    {
+      title: "Galeri",
+      href: "/galeri",
+      icon: <PhotoLibraryIcon />,
+    },
+    {
+      title: "Hubungi Kami",
+      href: "/hubungi-kami",
+      icon: <ContactPhoneIcon />,
+    },
+
+    {
+      title: "Pengiriman",
+      href: "/pengiriman",
+      icon: <AirportShuttleIcon />,
+    },
+    {
+      title: "Tentang Kami",
+      href: "/tentang-kami",
+      icon: <InfoIcon />,
+    },
+
     {
       title: "Settings",
       href: "/settings",

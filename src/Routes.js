@@ -15,6 +15,10 @@ import {
   SignUp as SignUpView,
   SignIn as SignInView,
   Article as ArticleView,
+  Galeri as GaleriView,
+  HubungiKami as HubungiKamiView,
+  Pengiriman as PengirimanView,
+  TentangKami as TentangKamiView,
   ResetPass,
   VerifyEmail,
 } from "./views";
@@ -70,6 +74,30 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/article"
+      />
+      <RouteWithLayout
+        component={GaleriView}
+        exact
+        layout={MainLayout}
+        path="/galeri"
+      />
+      <RouteWithLayout
+        component={HubungiKamiView}
+        exact
+        layout={MainLayout}
+        path="/hubungi-kami"
+      />
+      <RouteWithLayout
+        component={PengirimanView}
+        exact
+        layout={MainLayout}
+        path="/pengiriman"
+      />
+      <RouteWithLayout
+        component={TentangKamiView}
+        exact
+        layout={MainLayout}
+        path="/tentang-kami"
       />
       <RouteWithLayout
         component={SettingsView}
