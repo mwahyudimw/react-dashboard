@@ -8,7 +8,6 @@ const Galeri = () => {
       <ManageGaleri />
 
       <Card>
-        <CardHeader title="Galery" subheader="Manage your galery" />
         <Container></Container>
       </Card>
     </>
