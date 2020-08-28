@@ -151,6 +151,7 @@ const ManageGaleri = () => {
       data: formData,
     })
       .then((res) => {
+        getGalery();
         setLoading(false);
         Swal.fire("Added Success", "", "success");
       })
@@ -187,6 +188,7 @@ const ManageGaleri = () => {
         });
       });
   };
+
   return (
     <>
       <Card>
@@ -243,7 +245,7 @@ const ManageGaleri = () => {
       <div
         style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
       >
-        {images.map((res) => (
+        {images.map((res, index) => (
           <Card className={classes.root}>
             <CardHeader
               avatar={
@@ -257,8 +259,38 @@ const ManageGaleri = () => {
                   <MoreVertIcon onClick={() => handleGetId(res)} />
                 </IconButton>
               }
-              title="Shrimp and Chorizo Paella"
-              subheader="September 14, 2016"
+              title={"image" + index}
+              subheader={
+                res.createdAt.split("-")[2].substring(0, 2) +
+                " " +
+                [
+                  res.createdAt.split("-")[1] === "08"
+                    ? "Agustus"
+                    : res.createdAt.split("-")[1] === "09"
+                    ? "September"
+                    : res.createdAt.split("-")[1] === "10"
+                    ? "Oktober"
+                    : res.createdAt.split("-")[1] === "11"
+                    ? "November"
+                    : res.createdAt.split("-")[1] === "12"
+                    ? "Desember"
+                    : res.createdAt.split("-")[1] === "01"
+                    ? "Januari"
+                    : res.createdAt.split("-")[1] === "02"
+                    ? "Februari"
+                    : res.createdAt.split("-")[1] === "03"
+                    ? "Maret"
+                    : res.createdAt.split("-")[1] === "04"
+                    ? "April"
+                    : res.createdAt.split("-")[1] === "05"
+                    ? "Mei"
+                    : res.createdAt.split("-")[1] === "06"
+                    ? "Juni"
+                    : "Juli",
+                ] +
+                " " +
+                res.createdAt.split("-")[0]
+              }
             />
             <img
               style={{
