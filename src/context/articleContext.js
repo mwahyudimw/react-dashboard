@@ -157,30 +157,24 @@ class ArticleProvider extends React.Component {
             ...prevState.loadArticle,
             uploadThumbnail: false,
           },
-        }));
-        this.setState((prevState) => ({
           snackbar: {
             ...prevState.snackbar,
             open: true,
             title: "Good job, upload success !",
             severity: "success",
           },
-        }));
-        this.setState((prevState) => ({
           values: {
             ...prevState.values,
             imgrequest: res.data.thumbnail,
           },
         }));
       })
-      .catch((err) => {
+      .catch(() => {
         this.setState((prevState) => ({
           loadArticle: {
             ...prevState.loadArticle,
             uploadThumbnail: false,
           },
-        }));
-        this.setState((prevState) => ({
           snackbar: {
             ...prevState.snackbar,
             open: true,
@@ -194,6 +188,13 @@ class ArticleProvider extends React.Component {
   addArticle = (e) => {
     e.preventDefault();
 
+    const dataArticle = {
+      title: this.state.values.title,
+      tags: this.state.values.tags,
+      thumbnail: this.state.values.imgrequest,
+      description: this.state.values.description,
+    };
+
     this.setState((prevState) => ({
       values: {
         ...prevState.values,
@@ -205,21 +206,13 @@ class ArticleProvider extends React.Component {
         picture: "https://placehold.it/500x600",
         figurethumbnails: "",
       },
-    }));
-
-    this.setState((prevState) => ({
       loadArticle: {
         ...prevState.loadArticle,
         articleAdd: true,
       },
     }));
 
-    const dataArticle = {
-      title: this.state.values.title,
-      tags: this.state.values.tags,
-      thumbnail: this.state.values.imgrequest,
-      description: this.state.values.description,
-    };
+    
 
     axios({
       method: "post",
@@ -229,21 +222,7 @@ class ArticleProvider extends React.Component {
       },
       data: dataArticle,
     })
-      .then((res) => {
-        this.setState((prevState) => ({
-          loadArticle: {
-            ...prevState.loadArticle,
-            articleAdd: false,
-          },
-        }));
-        this.setState((prevState) => ({
-          snackbar: {
-            ...prevState.snackbar,
-            open: true,
-            title: "Article has been created !",
-            severity: "success",
-          },
-        }));
+      .then(() => {
         this.setState((prevState) => ({
           values: {
             ...prevState.values,
@@ -255,24 +234,21 @@ class ArticleProvider extends React.Component {
             picture: "https://placehold.it/500x600",
             figurethumbnails: "",
           },
-        }));
-        this.getArticle();
-      })
-      .catch((err) => {
-        this.setState((prevState) => ({
           loadArticle: {
             ...prevState.loadArticle,
             articleAdd: false,
           },
-        }));
-        this.setState((prevState) => ({
           snackbar: {
             ...prevState.snackbar,
             open: true,
-            title: "Check your connection !",
-            severity: "error",
+            title: "Article has been created !",
+            severity: "success",
           },
         }));
+
+        this.getArticle();
+      })
+      .catch((err) => {
         this.setState((prevState) => ({
           values: {
             ...prevState.values,
@@ -283,6 +259,16 @@ class ArticleProvider extends React.Component {
             picture: "",
             imgrequest: null,
             figurethumbnails: "",
+          },
+          loadArticle: {
+            ...prevState.loadArticle,
+            articleAdd: false,
+          },
+          snackbar: {
+            ...prevState.snackbar,
+            open: true,
+            title: "Check your connection !",
+            severity: "error",
           },
         }));
       });
@@ -304,9 +290,6 @@ class ArticleProvider extends React.Component {
         picture: "https://placehold.it/500x600",
         figurethumbnails: "",
       },
-    }));
-
-    this.setState((prevState) => ({
       loadArticle: {
         ...prevState.loadArticle,
         articleEdit: true,
@@ -332,21 +315,6 @@ class ArticleProvider extends React.Component {
     })
       .then(() => {
         this.setState((prevState) => ({
-          loadArticle: {
-            ...prevState.loadArticle,
-            articleEdit: false,
-            editThumbnail: false,
-          },
-        }));
-        this.setState((prevState) => ({
-          snackbar: {
-            ...prevState.snackbar,
-            open: true,
-            title: "Article has been edited !",
-            severity: "success",
-          },
-        }));
-        this.setState((prevState) => ({
           values: {
             ...prevState.values,
             title: "",
@@ -357,25 +325,22 @@ class ArticleProvider extends React.Component {
             picture: "https://placehold.it/500x600",
             figurethumbnails: "",
           },
-        }));
-        this.getArticle();
-      })
-      .catch(() => {
-        this.setState((prevState) => ({
           loadArticle: {
             ...prevState.loadArticle,
             articleEdit: false,
             editThumbnail: false,
           },
-        }));
-        this.setState((prevState) => ({
           snackbar: {
             ...prevState.snackbar,
             open: true,
-            title: "Check your connection !",
-            severity: "error",
+            title: "Article has been edited !",
+            severity: "success",
           },
         }));
+
+        this.getArticle();
+      })
+      .catch(() => {
         this.setState((prevState) => ({
           values: {
             ...prevState.values,
@@ -386,6 +351,17 @@ class ArticleProvider extends React.Component {
             picture: "",
             imgrequest: null,
             figurethumbnails: "",
+          },
+          loadArticle: {
+            ...prevState.loadArticle,
+            articleEdit: false,
+            editThumbnail: false,
+          },
+          snackbar: {
+            ...prevState.snackbar,
+            open: true,
+            title: "Check your connection !",
+            severity: "error",
           },
         }));
       });
@@ -406,10 +382,9 @@ class ArticleProvider extends React.Component {
         },
       })
       .then(() => {
-        this.setState({
-          loading: true,
-        });
         this.setState((prevState) => ({
+          loading: false,
+
           snackbar: {
             ...prevState.snackbar,
             open: true,
@@ -421,10 +396,9 @@ class ArticleProvider extends React.Component {
         this.getArticle();
       })
       .catch(() => {
-        this.setState({
-          loading: true,
-        });
         this.setState((prevState) => ({
+          loading: false,
+
           snackbar: {
             ...prevState.snackbar,
             open: true,
@@ -437,20 +411,31 @@ class ArticleProvider extends React.Component {
 
   render() {
     const { children } = this.props;
-    const { state } = this;
+    const {
+      state,
+      onClose,
+      deleteArticle,
+      handleChange,
+      handleTags,
+      onImageChange,
+      addImage,
+      handleEditor,
+      addArticle,
+      editArticle,
+    } = this;
     return (
       <Provider
         value={{
           ...state,
-          onClose: this.onClose,
-          deleteArticle: this.deleteArticle,
-          handleChange: this.handleChange,
-          handleTags: this.handleTags,
-          onImageChange: this.onImageChange,
-          addImage: this.addImage,
-          handleEditor: this.handleEditor,
-          addArticle: this.addArticle,
-          editArticle: this.editArticle,
+          onClose: onClose,
+          deleteArticle: deleteArticle,
+          handleChange: handleChange,
+          handleTags: handleTags,
+          onImageChange: onImageChange,
+          addImage: addImage,
+          handleEditor: handleEditor,
+          addArticle: addArticle,
+          editArticle: editArticle,
         }}
       >
         {children}
@@ -459,4 +444,4 @@ class ArticleProvider extends React.Component {
   }
 }
 
-export { Provider, Consumer, ContextType, ArticleProvider };
+export { Provider, Consumer, ArticleProvider };

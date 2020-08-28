@@ -151,9 +151,8 @@ export default function Item() {
                                 <Typography
                                   variant="body2"
                                   color="textSecondary"
-                                  component="p"
                                   dangerouslySetInnerHTML={{
-                                    __html: `${tile.description}`,
+                                    __html: tile.description,
                                   }}
                                 />
                               </CardContent>
