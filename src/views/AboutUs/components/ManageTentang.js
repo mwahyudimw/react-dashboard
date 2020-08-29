@@ -43,10 +43,7 @@ const ManageTentang = () => {
               </Alert>
             </Snackbar>
             <Card>
-              <CardHeader
-                title="Tentang Kami"
-                subheader="Manage your tentang kami"
-              />
+              <CardHeader title="About Us" subheader="Manage your about us" />
               <CardContent>
                 <CKEditor
                   editor={ClassicEditor}

@@ -9,14 +9,13 @@ import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import SettingsIcon from "@material-ui/icons/Settings";
 import CategoryIcon from "@material-ui/icons/Category";
-import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
-import LoyaltyIcon from "@material-ui/icons/Loyalty";
+import ReceiptIcon from "@material-ui/icons/Receipt";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import InfoIcon from "@material-ui/icons/Info";
 import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary";
 import AirportShuttleIcon from "@material-ui/icons/AirportShuttle";
 import ContactPhoneIcon from "@material-ui/icons/ContactPhone";
-import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
+import EmojiPeopleIcon from "@material-ui/icons/EmojiPeople";
 import { Profile, SidebarNav } from "./components";
 
 const useStyles = makeStyles((theme) => ({
@@ -65,15 +64,11 @@ const Sidebar = (props) => {
       icon: <ShoppingBasketIcon />,
     },
     {
-      title: "Bank",
-      href: "/bank",
-      icon: <AccountBalanceIcon />,
+      title: "Transaction",
+      href: "/transaction",
+      icon: <ReceiptIcon />,
     },
-    {
-      title: "Sale",
-      href: "/sale",
-      icon: <LoyaltyIcon />,
-    },
+
     {
       title: "Category",
       href: "/category",
@@ -90,24 +85,24 @@ const Sidebar = (props) => {
       icon: <AssignmentIcon />,
     },
     {
-      title: "Galeri",
-      href: "/galeri",
+      title: "Galery",
+      href: "/galery",
       icon: <PhotoLibraryIcon />,
     },
     {
-      title: "Hubungi Kami",
-      href: "/hubungi-kami",
+      title: "Contact Us",
+      href: "/contact-us",
       icon: <ContactPhoneIcon />,
     },
 
     {
-      title: "Pengiriman",
-      href: "/pengiriman",
+      title: "Delivery",
+      href: "/delivery",
       icon: <AirportShuttleIcon />,
     },
     {
-      title: "Tentang Kami",
-      href: "/tentang-kami",
+      title: "About Us",
+      href: "/about-us",
       icon: <InfoIcon />,
     },
     {

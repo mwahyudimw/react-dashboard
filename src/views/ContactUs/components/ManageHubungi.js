@@ -44,8 +44,8 @@ const ManageHubungi = () => {
             </Snackbar>
             <Card>
               <CardHeader
-                title="Hubungi Kami"
-                subheader="Manage your hubungi kami"
+                title="Contact Us"
+                subheader="Manage your contact us"
               />
               <CardContent>
                 <CKEditor

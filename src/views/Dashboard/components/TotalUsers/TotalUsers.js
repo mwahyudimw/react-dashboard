@@ -6,8 +6,7 @@ import { Card, CardContent, Grid, Typography, Avatar } from "@material-ui/core";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import PeopleIcon from "@material-ui/icons/PeopleOutlined";
 import axios from "axios";
-import { apiDashManage } from "../../../../api/api";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,8 +47,8 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
   },
   loading: {
-    color: '#fff'
-  }
+    color: "#fff",
+  },
 }));
 
 const TotalUsers = (props) => {
@@ -66,7 +65,7 @@ const TotalUsers = (props) => {
     setLoading(true);
     axios({
       method: "get",
-      url: `${apiDashManage + "users"}`,
+      url: `${process.env.REACT_APP_API_DASH + "/users"}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
@@ -93,8 +92,16 @@ const TotalUsers = (props) => {
             >
               TOTAL USERS
             </Typography>
-            <Typography className={classes.differenceTextColor} variant="h1" style={{ marginTop: '20px' }}>
-              {loading ? <CircularProgress className={classes.loading} /> : jumlahUser}
+            <Typography
+              className={classes.differenceTextColor}
+              variant="h1"
+              style={{ marginTop: "20px" }}
+            >
+              {loading ? (
+                <CircularProgress className={classes.loading} />
+              ) : (
+                jumlahUser
+              )}
             </Typography>
           </Grid>
           <Grid item>

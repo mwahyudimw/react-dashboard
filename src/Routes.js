@@ -8,8 +8,7 @@ import {
   Products as ProductsView,
   Category as CategoryView,
   UserList as UserListView,
-  Bank as BankView,
-  Sale as SaleView,
+  Transaction as TransactionView,
   Account as AccountView,
   Settings as SettingsView,
   SignUp as SignUpView,
@@ -52,17 +51,12 @@ const Routes = () => {
         layout={MainLayout}
         path="/category"
       />
+
       <RouteWithLayout
-        component={BankView}
+        component={TransactionView}
         exact
         layout={MainLayout}
-        path="/bank"
-      />
-      <RouteWithLayout
-        component={SaleView}
-        exact
-        layout={MainLayout}
-        path="/sale"
+        path="/transaction"
       />
       <RouteWithLayout
         component={AccountView}
@@ -80,25 +74,25 @@ const Routes = () => {
         component={GaleriView}
         exact
         layout={MainLayout}
-        path="/galeri"
+        path="/galery"
       />
       <RouteWithLayout
         component={HubungiKamiView}
         exact
         layout={MainLayout}
-        path="/hubungi-kami"
+        path="/contact-us"
       />
       <RouteWithLayout
         component={PengirimanView}
         exact
         layout={MainLayout}
-        path="/pengiriman"
+        path="/delivery"
       />
       <RouteWithLayout
         component={TentangKamiView}
         exact
         layout={MainLayout}
-        path="/tentang-kami"
+        path="/about-us"
       />
       <RouteWithLayout
         component={TestimonialsView}

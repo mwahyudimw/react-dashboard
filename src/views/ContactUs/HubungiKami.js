@@ -1,24 +1,24 @@
 import React from "react";
-import { TentangProvider } from "context/tentangContext";
+import { HubungiProvider } from "context/hubungiContext";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import Divider from "@material-ui/core/Divider";
 import CardContent from "@material-ui/core/CardContent";
-import ManageTentang from "./components/ManageTentang";
-import ItemTentang from "./components/Item";
+import ManageHubungi from "./components/ManageHubungi";
+import ItemHubungi from "./components/Item";
 
 const HubungiKami = () => {
   return (
-    <TentangProvider>
-      <ManageTentang />
+    <HubungiProvider>
+      <ManageHubungi />
       <Card>
-        <CardHeader subheader="Tentang Kami" title="Pratinjau" />
+        <CardHeader subheader="Contact Us" title="Preview" />
         <Divider />
         <CardContent>
-          <ItemTentang />
+          <ItemHubungi />
         </CardContent>
       </Card>
-    </TentangProvider>
+    </HubungiProvider>
   );
 };
 

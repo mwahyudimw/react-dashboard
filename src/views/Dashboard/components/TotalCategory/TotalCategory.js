@@ -6,8 +6,7 @@ import { Card, CardContent, Grid, Typography, Avatar } from "@material-ui/core";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import CategoryIcon from "@material-ui/icons/Category";
 import axios from "axios";
-import { apiDashManage } from "../../../../api/api";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,7 +56,7 @@ const TotalCategory = (props) => {
     setLoading(true);
     axios({
       method: "get",
-      url: `${apiDashManage + "category"}`,
+      url: `${process.env.REACT_APP_API_DASH + "/category"}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
@@ -85,9 +84,9 @@ const TotalCategory = (props) => {
             >
               TOTAL CATEGORY
             </Typography>
-            <Typography variant="h1" style={{ marginTop: '20px' }}>
+            <Typography variant="h1" style={{ marginTop: "20px" }}>
               {" "}
-              {loading ? <CircularProgress/> : jumlahCategory}
+              {loading ? <CircularProgress /> : jumlahCategory}
             </Typography>
           </Grid>
           <Grid item>

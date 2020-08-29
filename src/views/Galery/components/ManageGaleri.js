@@ -15,16 +15,12 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import CKEditor from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { apiDashManage } from "../../../api/api";
 import axios from "axios";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Swal from "sweetalert2";
 import { ModalDelete } from "../Modal/ModalDelete";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { ModalUpdate } from "../Modal/ModalUpdate";
 
 const useStyles = makeStyles((theme) => ({
   details: {
@@ -119,7 +115,7 @@ const ManageGaleri = () => {
     setLoading(true);
     axios({
       method: "get",
-      url: `${apiDashManage + "galery"}`,
+      url: `${process.env.REACT_APP_API_DASH + "/galery"}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
@@ -144,7 +140,7 @@ const ManageGaleri = () => {
     formData.append("image", image.image1);
     axios({
       method: "post",
-      url: `${apiDashManage + "galery"}`,
+      url: `${process.env.REACT_APP_API_DASH + "/galery"}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
@@ -169,7 +165,7 @@ const ManageGaleri = () => {
     setLoading(true);
     axios({
       method: "delete",
-      url: `${apiDashManage + "galery/" + _id}`,
+      url: `${process.env.REACT_APP_API_DASH + "/galery/" + _id}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },

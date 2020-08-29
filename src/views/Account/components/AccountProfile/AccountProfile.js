@@ -12,7 +12,6 @@ import {
   Button,
 } from "@material-ui/core";
 import axios from "axios";
-import { apiDashManage } from "../../../../api/api";
 import Swal from "sweetalert2";
 
 const useStyles = makeStyles((theme) => ({
@@ -42,7 +41,7 @@ const AccountProfile = (props) => {
   const [loading, setLoading] = React.useState(false);
   const DataUser = JSON.parse(localStorage.getItem("data"));
   const [picture, setPicture] = useState({
-    picture: `http://dashmanage.herokuapp.com/${DataUser.picture}`,
+    picture: `${process.env.REACT_APP_URL_DASH}/${DataUser.picture}`,
     image: "",
   });
   const [user, setUser] = useState({
@@ -55,7 +54,7 @@ const AccountProfile = (props) => {
     setUser((user) => ({
       ...user,
       username: DataUser.username,
-      avatar: `http://dashmanage.herokuapp.com/${DataUser.picture}`,
+      avatar: `${process.env.REACT_APP_URL_DASH}/${DataUser.picture}`,
     }));
   }, []);
 
@@ -68,7 +67,7 @@ const AccountProfile = (props) => {
     console.log(formdata);
     axios({
       method: "put",
-      url: `${apiDashManage + "update/pict-user"}`,
+      url: `${process.env.REACT_APP_API_DASH + "/update/pict-user"}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },

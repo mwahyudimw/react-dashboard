@@ -13,7 +13,6 @@ import {
   TextField,
 } from "@material-ui/core";
 import axios from "axios";
-import { apiDashManage } from "../../../../api/api";
 import Swal from "sweetalert2";
 
 const useStyles = makeStyles(() => ({
@@ -55,7 +54,7 @@ const AccountDetails = (props) => {
   const handleGetDataUser = () => {
     axios({
       method: "get",
-      url: `${apiDashManage + "users"}`,
+      url: `${process.env.REACT_APP_API_DASH + "/users"}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
@@ -66,7 +65,7 @@ const AccountDetails = (props) => {
     setLoading(true);
     axios({
       method: "put",
-      url: `${apiDashManage + "update/user"}`,
+      url: `${process.env.REACT_APP_API_DASH + "/update/user"}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },

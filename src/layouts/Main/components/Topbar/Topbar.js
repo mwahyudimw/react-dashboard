@@ -7,7 +7,6 @@ import { AppBar, Toolbar, Badge, Hidden, IconButton } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import TranslateIcon from "@material-ui/icons/Translate";
 import InputIcon from "@material-ui/icons/Input";
-import { apiDashManage } from "../../../../api/api";
 import { CategoryContext } from "../../../../context/categoryContext";
 import axios from "axios";
 
@@ -38,7 +37,7 @@ const Topbar = (props) => {
   const handleGetCategory = () => {
     axios({
       method: "get",
-      url: `${apiDashManage + "category"}`,
+      url: `${process.env.REACT_APP_API_DASH + "/category"}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
