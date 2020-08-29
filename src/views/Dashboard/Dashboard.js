@@ -4,7 +4,7 @@ import { Grid } from "@material-ui/core";
 
 import {
   TotalUsers,
-  LatestSales,
+  ReviewStatistic,
   TotalProduct,
   TotalCategory,
 } from "./components";
@@ -31,7 +31,7 @@ const Dashboard = () => {
           <TotalUsers />
         </Grid>
         <Grid item lg={12} md={12} xl={12} xs={12}>
-          <LatestSales />
+          <ReviewStatistic />
         </Grid>
       </Grid>
     </div>

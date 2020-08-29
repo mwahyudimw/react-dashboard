@@ -27,7 +27,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const LatestSales = props => {
+const ReviewStatistic = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
@@ -71,8 +71,8 @@ const LatestSales = props => {
   );
 };
 
-LatestSales.propTypes = {
+ReviewStatistic.propTypes = {
   className: PropTypes.string
 };
 
-export default LatestSales;
+export default ReviewStatistic;

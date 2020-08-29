@@ -7,6 +7,7 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import CategoryIcon from "@material-ui/icons/Category";
 import axios from "axios";
 import { apiDashManage } from "../../../../api/api";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,12 +22,12 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     backgroundColor: "teal",
-    height: 56,
-    width: 56,
+    height: 100,
+    width: 100,
   },
   icon: {
-    height: 32,
-    width: 32,
+    height: 50,
+    width: 50,
   },
   difference: {
     marginTop: theme.spacing(2),
@@ -80,13 +81,13 @@ const TotalCategory = (props) => {
               className={classes.title}
               color="textSecondary"
               gutterBottom
-              variant="body2"
+              variant="h5"
             >
               TOTAL CATEGORY
             </Typography>
-            <Typography variant="h3">
+            <Typography variant="h1" style={{ marginTop: '20px' }}>
               {" "}
-              {loading ? "loading..." : jumlahCategory}
+              {loading ? <CircularProgress/> : jumlahCategory}
             </Typography>
           </Grid>
           <Grid item>
@@ -95,12 +96,6 @@ const TotalCategory = (props) => {
             </Avatar>
           </Grid>
         </Grid>
-        <div className={classes.difference}>
-          <NotificationsIcon className={classes.differenceIcon} />
-          <Typography className={classes.caption} variant="caption">
-            Since last month
-          </Typography>
-        </div>
       </CardContent>
     </Card>
   );

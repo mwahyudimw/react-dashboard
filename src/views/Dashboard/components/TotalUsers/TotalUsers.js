@@ -7,6 +7,7 @@ import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import PeopleIcon from "@material-ui/icons/PeopleOutlined";
 import axios from "axios";
 import { apiDashManage } from "../../../../api/api";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,12 +24,12 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     backgroundColor: "#fff",
-    height: 56,
-    width: 56,
+    height: 100,
+    width: 100,
   },
   icon: {
-    height: 32,
-    width: 32,
+    height: 50,
+    width: 50,
     color: "teal",
   },
   difference: {
@@ -46,6 +47,9 @@ const useStyles = makeStyles((theme) => ({
     color: "#fff",
     marginRight: theme.spacing(1),
   },
+  loading: {
+    color: '#fff'
+  }
 }));
 
 const TotalUsers = (props) => {
@@ -85,12 +89,12 @@ const TotalUsers = (props) => {
               className={classes.title}
               color="textSecondary"
               gutterBottom
-              variant="body2"
+              variant="h5"
             >
               TOTAL USERS
             </Typography>
-            <Typography className={classes.differenceTextColor} variant="h3">
-              {loading ? "loading..." : jumlahUser}
+            <Typography className={classes.differenceTextColor} variant="h1" style={{ marginTop: '20px' }}>
+              {loading ? <CircularProgress className={classes.loading} /> : jumlahUser}
             </Typography>
           </Grid>
           <Grid item>
@@ -99,15 +103,6 @@ const TotalUsers = (props) => {
             </Avatar>
           </Grid>
         </Grid>
-        <div className={classes.difference}>
-          <ArrowUpwardIcon className={classes.differenceIcon} />
-          <Typography className={classes.differenceValue} variant="body2">
-            16%
-          </Typography>
-          <Typography className={classes.caption} variant="caption">
-            Since last month
-          </Typography>
-        </div>
       </CardContent>
     </Card>
   );
