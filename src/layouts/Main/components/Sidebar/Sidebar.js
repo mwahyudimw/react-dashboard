@@ -16,6 +16,7 @@ import InfoIcon from "@material-ui/icons/Info";
 import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary";
 import AirportShuttleIcon from "@material-ui/icons/AirportShuttle";
 import ContactPhoneIcon from "@material-ui/icons/ContactPhone";
+import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import { Profile, SidebarNav } from "./components";
 
 const useStyles = makeStyles((theme) => ({
@@ -109,7 +110,11 @@ const Sidebar = (props) => {
       href: "/tentang-kami",
       icon: <InfoIcon />,
     },
-
+    {
+      title: "Testimonials",
+      href: "/testimonials",
+      icon: <EmojiPeopleIcon />,
+    },
     {
       title: "Settings",
       href: "/settings",

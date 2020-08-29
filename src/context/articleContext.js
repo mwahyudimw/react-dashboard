@@ -1,5 +1,4 @@
 import React from "react";
-import { apiDashManage } from "../api/api";
 import axios from "axios";
 
 let ContextType;
@@ -41,7 +40,7 @@ class ArticleProvider extends React.Component {
   getArticle = async () => {
     const response = await axios({
       method: "get",
-      url: `${apiDashManage}article`,
+      url: `${process.env.REACT_APP_API_DASH}/article`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -145,7 +144,7 @@ class ArticleProvider extends React.Component {
 
     axios({
       method: "post",
-      url: `${apiDashManage}image`,
+      url: `${process.env.REACT_APP_API_DASH}/image`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -212,11 +211,9 @@ class ArticleProvider extends React.Component {
       },
     }));
 
-    
-
     axios({
       method: "post",
-      url: `${apiDashManage}article`,
+      url: `${process.env.REACT_APP_API_DASH}/article`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -307,7 +304,7 @@ class ArticleProvider extends React.Component {
 
     axios({
       method: "put",
-      url: `${apiDashManage}article`,
+      url: `${process.env.REACT_APP_API_DASH}/article`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -376,7 +373,7 @@ class ArticleProvider extends React.Component {
       loading: true,
     });
     axios
-      .delete(`${apiDashManage}article/${id}`, {
+      .delete(`${process.env.REACT_APP_API_DASH}/article/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

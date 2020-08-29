@@ -1,5 +1,4 @@
 import React from "react";
-import { apiDashManage } from "../api/api";
 import axios from "axios";
 
 let ContextType;
@@ -39,7 +38,7 @@ class TentangProvider extends React.Component {
   getTentangKami = async () => {
     const response = await axios({
       method: "get",
-      url: `${apiDashManage}tentang-kami`,
+      url: `${process.env.REACT_APP_API_DASH}/tentang-kami`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -109,7 +108,7 @@ class TentangProvider extends React.Component {
 
     axios({
       method: "post",
-      url: `${apiDashManage}portal-web`,
+      url: `${process.env.REACT_APP_API_DASH}/portal-web`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json",
@@ -175,7 +174,7 @@ class TentangProvider extends React.Component {
     };
     axios({
       method: "put",
-      url: `${apiDashManage}portal-web`,
+      url: `${process.env.REACT_APP_API_DASH}/portal-web`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json",
@@ -235,7 +234,7 @@ class TentangProvider extends React.Component {
     }));
     const response = await axios({
       method: "delete",
-      url: `${apiDashManage}portal-web/${id}`,
+      url: `${process.env.REACT_APP_API_DASH}/portal-web/${id}`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json",

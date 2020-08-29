@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/styles";
 import MaterialTable from "material-table";
 import { CategoryContext } from "../../context/categoryContext";
 import axios from "axios";
-import { apiDashManage } from "../../api/api";
 import LoadingOverlay from "react-loading-overlay";
 import Swal from "sweetalert2";
 
@@ -111,7 +110,7 @@ export default function Categeory() {
     }));
     axios({
       method: "get",
-      url: `${apiDashManage + "product"}`,
+      url: `${process.env.REACT_APP_API_DASH + "/product"}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
@@ -189,7 +188,7 @@ export default function Categeory() {
                   console.log("form adata", formData);
                   axios({
                     method: "post",
-                    url: `${apiDashManage + "product"}`,
+                    url: `${process.env.REACT_APP_API_DASH + "/product"}`,
                     headers: {
                       Authorization: "Bearer " + localStorage.getItem("token"),
                     },
@@ -231,7 +230,7 @@ export default function Categeory() {
                       const data = [...prevState.data];
                       axios({
                         method: "put",
-                        url: `${apiDashManage + "product"}`,
+                        url: `${process.env.REACT_APP_API_DASH + "/product"}`,
                         headers: {
                           Authorization:
                             "Bearer " + localStorage.getItem("token"),
@@ -282,7 +281,7 @@ export default function Categeory() {
                     const data = [...prevState.data];
                     axios({
                       method: "delete",
-                      url: `${apiDashManage + `${"product/" + oldData._id}`}`,
+                      url: `${process.env.REACT_APP_API_DASH + `${"/product/" + oldData._id}`}`,
                       headers: {
                         Authorization:
                           "Bearer " + localStorage.getItem("token"),

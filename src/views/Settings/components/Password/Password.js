@@ -12,7 +12,6 @@ import {
   TextField,
 } from "@material-ui/core";
 import axios from "axios";
-import { apiDashManage } from "../../../../api/api";
 import Swal from "sweetalert2";
 
 const useStyles = makeStyles(() => ({
@@ -41,7 +40,7 @@ const Password = (props) => {
     setLoading(true);
     axios({
       method: "put",
-      url: `${apiDashManage + "update-password"}`,
+      url: `${process.env.REACT_APP_API_DASH + "/update-password"}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },

@@ -170,10 +170,7 @@ const ResetPass = (props) => {
     };
 
     axios
-      .post(
-        `https://dashmanage.herokuapp.com/api/v1/new-password`,
-        resetPassword
-      )
+      .post(`${process.env.REACT_APP_API_DASH}/new-password`, resetPassword)
       .then((res) => {
         console.log("response", res);
         setLoading(false);

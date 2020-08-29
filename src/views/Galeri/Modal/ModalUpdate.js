@@ -6,7 +6,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import axios from "axios";
-import { apiDashManage } from "../../../api/api";
 
 export const ModalUpdate = ({ open, handleClose, close, id }) => {
   const [image, setImage] = useState({
@@ -27,7 +26,7 @@ export const ModalUpdate = ({ open, handleClose, close, id }) => {
     formData.append("image", image.image1);
     axios({
       method: "put",
-      url: `${apiDashManage + "galery/" + id}`,
+      url: `${process.env.REACT_APP_API_DASH + "/galery/" + id}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },

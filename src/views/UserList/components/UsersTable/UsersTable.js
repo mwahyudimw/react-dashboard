@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
-import { apiDashManage } from "../../../../api/api";
 import axios from "axios";
 import LoadingOverlay from "react-loading-overlay";
 import Swal from "sweetalert2";
@@ -17,7 +16,7 @@ function UsersTable() {
     setLoading(true);
     axios({
       method: "get",
-      url: `${apiDashManage + "users"}`,
+      url: `${process.env.REACT_APP_API_DASH + "/users"}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
@@ -49,7 +48,7 @@ function UsersTable() {
             render: (rowData) => (
               <img
                 style={{ height: 36, borderRadius: "50%" }}
-                src={`http://dashmanage.herokuapp.com/${rowData.picture}`}
+                src={`${process.env.REACT_APP_URL_DASH}/${rowData.picture}`}
                 alt="user"
               />
             ),

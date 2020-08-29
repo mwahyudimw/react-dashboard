@@ -16,7 +16,6 @@ import {
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { apiDashManage } from "../../api/api";
 
 const schema = {
   username: {
@@ -191,7 +190,7 @@ const SignUp = (props) => {
       email: formState.values.email,
     };
     axios
-      .post(`${apiDashManage + "sign-up"}`, dataUsers)
+      .post(`${process.env.REACT_APP_API_DASH + "/sign-up"}`, dataUsers)
       .then((res) => {
         setLoading(false);
         Swal.fire("Good job!", "Registration successful", "success");

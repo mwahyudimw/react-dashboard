@@ -167,7 +167,7 @@ const VerifyEmail = (props) => {
     const value = formState.values;
 
     axios
-      .post(`https://dashmanage.herokuapp.com/api/v1/reset-password`, value)
+      .post(`${process.env.REACT_APP_API_DASH}/reset-password`, value)
 
       .then((res) => {
         console.log("response", res);

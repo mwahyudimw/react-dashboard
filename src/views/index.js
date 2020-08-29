@@ -16,3 +16,4 @@ export { default as Galeri } from "./Galeri";
 export { default as HubungiKami } from "./HubungiKami";
 export { default as Pengiriman } from "./Pengiriman";
 export { default as TentangKami } from "./TentangKami";
+export { default as Testimonials } from "./Testimonials"

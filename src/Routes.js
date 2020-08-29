@@ -19,6 +19,7 @@ import {
   HubungiKami as HubungiKamiView,
   Pengiriman as PengirimanView,
   TentangKami as TentangKamiView,
+  Testimonials as TestimonialsView,
   ResetPass,
   VerifyEmail,
 } from "./views";
@@ -98,6 +99,12 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/tentang-kami"
+      />
+      <RouteWithLayout
+        component={TestimonialsView}
+        exact
+        layout={MainLayout}
+        path="/testimonials"
       />
       <RouteWithLayout
         component={SettingsView}

@@ -13,7 +13,6 @@ import {
 } from "@material-ui/core";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import axios from "axios";
-import { apiDashManage } from "../../api/api";
 import Swal from "sweetalert2";
 
 const schema = {
@@ -179,7 +178,7 @@ const SignIn = (props) => {
       email: formState.values.email,
     };
     axios
-      .post(`${apiDashManage + "sign-in"}`, dataUsers)
+      .post(`${process.env.REACT_APP_API_DASH + "/sign-in"}`, dataUsers)
       .then((res) => {
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("data", JSON.stringify(res.data.user));
