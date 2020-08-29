@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@material-ui/styles";
+import { CategoryContext } from "../../context/categoryContext";
 import MaterialTable from "material-table";
 import axios from "axios";
-import { CategoryContext } from "../../context/categoryContext";
 import LoadingOverlay from "react-loading-overlay";
 import Swal from "sweetalert2";
 
