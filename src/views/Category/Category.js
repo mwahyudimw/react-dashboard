@@ -198,38 +198,35 @@ export default function Category() {
                   delete: true,
                 }));
                 resolve();
-                setState((prevState) => {
-                  const data = [...prevState.data];
-                  axios({
-                    method: "delete",
-                    url: `${process.env.REACT_APP_API_DASH +
-                      `${"/category/" + oldData._id}`}`,
-                    headers: {
-                      Authorization: "Bearer " + localStorage.getItem("token"),
-                    },
+
+                axios({
+                  method: "delete",
+                  url: `${process.env.REACT_APP_API_DASH +
+                    `${"/category/" + oldData._id}`}`,
+                  headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token"),
+                  },
+                })
+                  .then((res) => {
+                    //   console.log("delete category", res);
+                    handleGetCategory();
+                    Swal.fire("Delete Success", "", "success");
+                    setLoading((loading) => ({
+                      ...loading,
+                      delete: false,
+                    }));
                   })
-                    .then((res) => {
-                      //   console.log("delete category", res);
-                      handleGetCategory();
-                      Swal.fire("Delete Success", "", "success");
-                      setLoading((loading) => ({
-                        ...loading,
-                        delete: false,
-                      }));
-                    })
-                    .catch((err) => {
-                      setLoading((loading) => ({
-                        ...loading,
-                        delete: false,
-                      }));
-                      Swal.fire({
-                        icon: "error",
-                        title: "Check your connections",
-                        text: "",
-                      });
+                  .catch((err) => {
+                    setLoading((loading) => ({
+                      ...loading,
+                      delete: false,
+                    }));
+                    Swal.fire({
+                      icon: "error",
+                      title: "Check your connections",
+                      text: "",
                     });
-                  return { ...prevState, data };
-                });
+                  });
               }),
           }}
           options={{
