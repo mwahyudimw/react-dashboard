@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@material-ui/styles";
 import MaterialTable from "material-table";
 import { CategoryContext } from "../../context/categoryContext";
+import { ProductContext } from "../../context/productContext";
 import axios from "axios";
 import LoadingOverlay from "react-loading-overlay";
 import Swal from "sweetalert2";
@@ -18,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Products() {
   const classes = useStyles();
   const [categoryContext, setCategoryContext] = useContext(CategoryContext);
+  const [productContext, setProductContext] = useContext(ProductContext);
   const [dataProduct, setDataProduct] = useState([]);
 
   var obj = categoryContext.reduce(function(acc, cur, i) {
@@ -55,48 +57,6 @@ export default function Products() {
         lookup: obj,
       },
     ],
-    data: [
-      {
-        name_product: "Daun",
-        slug: "Baran",
-        price: "Rp. 80.000",
-        stock: "sss",
-        description: "ddd",
-        status: "sac",
-        imageUrl: "laks",
-        categoryId: "uuuu",
-      },
-      {
-        name_product: "Daun",
-        slug: "Baran",
-        price: "Rp. 100.000",
-        stock: "sss",
-        description: "ddd",
-        status: "sac",
-        imageUrl: "laks",
-        categoryId: "uuuu",
-      },
-      {
-        name_product: "Daun",
-        slug: "Baran",
-        price: "Rp. 95.000",
-        stock: "sss",
-        description: "ddd",
-        status: "sac",
-        imageUrl: "laks",
-        categoryId: "uuuu",
-      },
-      {
-        name_product: "Daun",
-        slug: "Baran",
-        price: "Rp. 100.000",
-        stock: "sss",
-        description: "ddd",
-        status: "sac",
-        imageUrl: "laks",
-        categoryId: "uuuu",
-      },
-    ],
   });
 
   useEffect(() => {
@@ -118,6 +78,7 @@ export default function Products() {
       .then((res) => {
         console.log("coba", res.data.products);
         setDataProduct(res.data.products);
+        setProductContext(res.data.products);
         setLoading((loading) => ({
           ...loading,
           get: false,
