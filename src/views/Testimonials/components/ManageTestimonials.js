@@ -10,6 +10,8 @@ import {
   TextField,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+import { useRecoilState } from "recoil";
+import { ClickStore } from "../../../store/TestimonialsStore";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from "axios";
@@ -40,6 +42,7 @@ const ManageTestimonial = () => {
     quote: "",
   });
   const [load, setLoad] = React.useState(false);
+  const [click] = useRecoilState(ClickStore);
 
   const { name, thumbnail, quote, picture } = values;
 
@@ -68,6 +71,7 @@ const ManageTestimonial = () => {
   };
 
   const addTestimonials = async () => {
+    setLoad(true);
     const data = {
       name: name,
       thumbnail: thumbnail,
@@ -78,80 +82,75 @@ const ManageTestimonial = () => {
       const response = await axios({
         method: "post",
         url: `${process.env.REACT_APP_API_DASH}/testimonials`,
-        body: data,
         headers: {
           Authorization: localStorage.getItem("token"),
         },
+        data: data,
       });
 
       const responseJson = await response;
+      setLoad(false);
       console.log(responseJson);
     } catch (err) {
+      setLoad(false);
       console.log(err);
     }
   };
 
   return (
-    <Card>
-      <CardHeader subheader="Manage your Testimonials" title="Testimonials" />
-      <Divider />
-      <form id="myform" encType="multipart/form-data">
+    <>
+      <Card>
+        <CardHeader subheader="Manage your Testimonials" title="Testimonials" />
+        <Divider />
+        <form id="myform" encType="multipart/form-data">
+          <CardContent>
+            <div className={classes.details}>
+              <Avatar className={classes.avatar} src={picture} />
+              <input
+                style={{
+                  position: "absolute",
+                  marginTop: "40px",
+                  cursor: "pointer",
+                }}
+                type="file"
+                onChange={onImageChange}
+                name="image"
+              />
+            </div>
+          </CardContent>
+          <Divider />
+        </form>
+
         <CardContent>
-          <div className={classes.details}>
-            <Avatar className={classes.avatar} src={picture} />
-            <input
-              style={{
-                position: "absolute",
-                marginTop: "40px",
-                cursor: "pointer",
-              }}
-              type="file"
-              onChange={onImageChange}
-              name="image"
-            />
-          </div>
+          <TextField
+            fullWidth
+            label="Name"
+            name="name"
+            type="text"
+            variant="outlined"
+            style={{ marginBottom: 25 }}
+            onChange={handleChange}
+          />
+
+          <CKEditor
+            editor={ClassicEditor}
+            onChange={(event, editor) => {
+              const quotes = editor.getData();
+              setValues((prevState) => ({
+                ...prevState,
+                quote: quotes,
+              }));
+            }}
+          />
         </CardContent>
         <Divider />
         <CardActions>
-          <Button
-            className={classes.uploadButton}
-            color="primary"
-            variant="contained"
-          >
-            Upload Thumbnail
+          <Button color="primary" variant="contained" onClick={addTestimonials}>
+            {load ? "Loading..." : "Add Testimonials"}
           </Button>
         </CardActions>
-      </form>
-
-      <CardContent>
-        <TextField
-          fullWidth
-          label="Name"
-          name="name"
-          type="text"
-          variant="outlined"
-          style={{ marginBottom: 25 }}
-          onChange={handleChange}
-        />
-
-        <CKEditor
-          editor={ClassicEditor}
-          onChange={(event, editor) => {
-            const quotes = editor.getData();
-            setValues((prevState) => ({
-              ...prevState,
-              quote: quotes,
-            }));
-          }}
-        />
-      </CardContent>
-      <Divider />
-      <CardActions>
-        <Button color="primary" variant="contained" onClick={addTestimonials}>
-          {load ? "Loading..." : "Add Testimonials"}
-        </Button>
-      </CardActions>
-    </Card>
+      </Card>
+    </>
   );
 };
 
