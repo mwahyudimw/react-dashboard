@@ -39,7 +39,7 @@
     "clsx": "^1.0.4",
     "dotenv": "^8.2.0",
     "history": "^4.9.0",
-    "material-table": "^1.66.0",
+    "material-table": "^1.69.0",
     "moment": "^2.24.0",
     "node-sass": "^4.14.1",
     "prop-types": "^15.7.2",
