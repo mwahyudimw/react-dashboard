@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Categeory() {
+export default function Products() {
   const classes = useStyles();
   const [categoryContext, setCategoryContext] = useContext(CategoryContext);
   const [dataProduct, setDataProduct] = useState([]);
@@ -281,7 +281,8 @@ export default function Categeory() {
                     const data = [...prevState.data];
                     axios({
                       method: "delete",
-                      url: `${process.env.REACT_APP_API_DASH + `${"/product/" + oldData._id}`}`,
+                      url: `${process.env.REACT_APP_API_DASH +
+                        `${"/product/" + oldData._id}`}`,
                       headers: {
                         Authorization:
                           "Bearer " + localStorage.getItem("token"),

@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRecoilState } from "recoil";
-import { TestimonialStore } from "../../../store/TestimonialsStore";
+import { TestimonialStore, ClickStore } from "../../../store/TestimonialsStore";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import axios from "axios";
@@ -12,8 +12,11 @@ import {
   Typography,
   Container,
   IconButton,
+  CardContent,
+  Button,
 } from "@material-ui/core";
 import CreateIcon from "@material-ui/icons/Create";
+import Edit from "./Edit";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -35,7 +38,10 @@ const useStyles = makeStyles(() => ({
 const Item = () => {
   const classes = useStyles();
   const [data, setData] = useRecoilState(TestimonialStore);
+  const [click, setClick] = useRecoilState(ClickStore);
   const [load, setLoad] = React.useState(true);
+  const [loadDelete, setLoadDelete] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
   const [snackbar, setSnackBar] = React.useState({
     open: false,
     vertical: "top",
@@ -77,7 +83,7 @@ const Item = () => {
   const { vertical, horizontal, open, title } = snackbar;
 
   return (
-    <div>
+    <div className={classes.root}>
       <Snackbar
         anchorOrigin={{ vertical, horizontal }}
         open={open}
@@ -112,25 +118,61 @@ const Item = () => {
                     avatar={
                       <img
                         className={classes.avatar}
-                        src={`${process.env.REACT_APP_URL_DASH}/${item.thumbnail}`}
+                        src={item.thumbnail}
                         alt={item.name}
                       />
                     }
                     action={
-                      <IconButton aria-label="settings">
+                      <IconButton
+                        aria-label="edit"
+                        onClick={() => {
+                          setIsOpen(true);
+                          setClick(item._id);
+                        }}
+                      >
                         <CreateIcon />
                       </IconButton>
                     }
                     title={item.name}
                   />
+                  <CardContent>
+                    <Typography
+                      component="blockquote"
+                      variant="body1"
+                      dangerouslySetInnerHTML={{ __html: item.quote }}
+                    />
+                  </CardContent>
                   <CardActions>
-                    <Typography component="blockquote" variant="body1">
-                      {item.quote}
-                    </Typography>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      disabled={loadDelete}
+                      onClick={() => {
+                        setLoadDelete(true);
+                        axios({
+                          url: `${process.env.REACT_APP_API_DASH}/testimonials/${item._id}`,
+                          method: "delete",
+                          headers: {
+                            Authorization: localStorage.getItem("token"),
+                          },
+                        })
+                          .then(() => {
+                            alert("success delete");
+                            setLoadDelete(false);
+                            window.location.reload();
+                          })
+                          .catch(() => {
+                            setLoadDelete(false);
+                          });
+                      }}
+                    >
+                      {loadDelete ? "Loading..." : "Delete"}
+                    </Button>
                   </CardActions>
                 </Card>
               );
             })}
+        <Edit openModal={isOpen} handleClose={() => setIsOpen(false)} />
       </Container>
     </div>
   );

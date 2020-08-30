@@ -12,7 +12,7 @@ const Article = () => {
     <ArticleProvider>
       <ManageArticle />
       <Card>
-        <CardHeader subheader="Your Article" title="Article" />
+        <CardHeader subheader="Preview" title="Article" />
         <Divider />
         <CardContent>
           <Item />
