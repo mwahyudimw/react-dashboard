@@ -44,6 +44,17 @@ export default function Products() {
       { title: "Price", field: "price", editable: "never" },
       { title: "Product", field: "productId", lookup: obj },
     ],
+    data: [
+      {
+        name: "Daun",
+      },
+      {
+        name: "Pohon",
+      },
+      {
+        name: "Lontong",
+      },
+    ],
   });
 
   useEffect(() => {
@@ -51,6 +62,33 @@ export default function Products() {
   }, []);
 
   const getTransaction = async () => {
+    setLoading((loading) => ({
+      ...loading,
+      get: true,
+    }));
+    axios({
+      method: "get",
+      url: `${process.env.REACT_APP_API_DASH + "/transactions"}`,
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+      .then((res) => {
+        console.log("transaction", res.data.transactions);
+        setDataTransaction(res.data.transactions);
+        setLoading((loading) => ({
+          ...loading,
+          get: false,
+        }));
+      })
+      .catch((err) => {
+        setLoading((loading) => ({
+          ...loading,
+          get: false,
+        }));
+      });
+  };
+  const getTransactions = async () => {
     setLoading((loading) => ({
       ...loading,
       get: true,
@@ -106,7 +144,7 @@ export default function Products() {
           data={dataTransaction.map(({ productId, ...rest }) => {
             return {
               ...rest,
-              productId: productId,
+              productId: productId.name,
             };
           })}
           editable={{
@@ -117,33 +155,37 @@ export default function Products() {
                   add: true,
                 }));
                 resolve();
-
-                axios({
-                  method: "post",
-                  url: `${process.env.REACT_APP_API_DASH + "/transactions"}`,
-                  headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token"),
-                  },
-                  data: {
-                    value: newData.value,
-                    dateTransaction: Moment().format("Do MMMM YYYY"),
-                    productId: newData.productId,
-                    name: newData.name,
-                  },
-                })
-                  .then((res) => {
-                    console.log("res addd", res);
-                    setLoading((loading) => ({
-                      ...loading,
-                      add: false,
-                    }));
+                setState((prevState) => {
+                  const data = [...prevState.data];
+                  axios({
+                    method: "post",
+                    url: `${process.env.REACT_APP_API_DASH + "/transactions"}`,
+                    headers: {
+                      Authorization: "Bearer " + localStorage.getItem("token"),
+                    },
+                    data: {
+                      value: newData.value,
+                      dateTransaction: Moment().format("Do MMMM YYYY"),
+                      productId: newData.productId,
+                      name: newData.name,
+                    },
                   })
-                  .catch((err) => {
-                    setLoading((loading) => ({
-                      ...loading,
-                      add: false,
-                    }));
-                  });
+                    .then((res) => {
+                      console.log("res addd", res);
+                      getTransactions();
+                      setLoading((loading) => ({
+                        ...loading,
+                        add: false,
+                      }));
+                    })
+                    .catch((err) => {
+                      setLoading((loading) => ({
+                        ...loading,
+                        add: false,
+                      }));
+                    });
+                  return { ...prevState, data };
+                });
               }),
             onRowUpdate: (newData, oldData) =>
               new Promise((resolve) => {
@@ -203,7 +245,7 @@ export default function Products() {
                   })
                     .then((res) => {
                       Swal.fire("Delete Success", "", "success");
-
+                      getTransaction();
                       setLoading((loading) => ({
                         ...loading,
                         delete: false,

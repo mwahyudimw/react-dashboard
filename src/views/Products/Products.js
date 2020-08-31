@@ -57,6 +57,17 @@ export default function Categeory() {
         lookup: obj,
       },
     ],
+    data: [
+      {
+        name: "Daun",
+      },
+      {
+        name: "Pohon",
+      },
+      {
+        name: "Lontong",
+      },
+    ],
   });
 
   useEffect(() => {
@@ -137,44 +148,47 @@ export default function Categeory() {
                   add: true,
                 }));
                 resolve();
+                setState((prevState) => {
+                  const data = [...prevState.data];
+                  const formData = new FormData();
+                  formData.append("image", imagesUrl);
+                  formData.append("name", newData.name);
+                  formData.append("price", newData.price);
+                  formData.append("stock", newData.stock);
+                  formData.append("description", newData.description);
+                  formData.append("categoryId", newData.categoryId);
 
-                const formData = new FormData();
-                formData.append("image", imagesUrl);
-                formData.append("name", newData.name);
-                formData.append("price", newData.price);
-                formData.append("stock", newData.stock);
-                formData.append("description", newData.description);
-                formData.append("categoryId", newData.categoryId);
-
-                console.log("form adata", formData);
-                axios({
-                  method: "post",
-                  url: `${process.env.REACT_APP_API_DASH + "/product"}`,
-                  headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token"),
-                  },
-                  data: formData,
-                })
-                  .then((res) => {
-                    console.log("tambah", res);
-                    Swal.fire("Added Success", "", "success");
-                    handleGetProduct();
-                    setLoading((loading) => ({
-                      ...loading,
-                      add: false,
-                    }));
+                  console.log("form adata", formData);
+                  axios({
+                    method: "post",
+                    url: `${process.env.REACT_APP_API_DASH + "/product"}`,
+                    headers: {
+                      Authorization: "Bearer " + localStorage.getItem("token"),
+                    },
+                    data: formData,
                   })
-                  .catch((err) => {
-                    setLoading((loading) => ({
-                      ...loading,
-                      add: false,
-                    }));
-                    Swal.fire({
-                      icon: "error",
-                      title: "Check your connections",
-                      text: "",
+                    .then((res) => {
+                      console.log("tambah", res);
+                      Swal.fire("Added Success", "", "success");
+                      handleGetProduct();
+                      setLoading((loading) => ({
+                        ...loading,
+                        add: false,
+                      }));
+                    })
+                    .catch((err) => {
+                      setLoading((loading) => ({
+                        ...loading,
+                        add: false,
+                      }));
+                      Swal.fire({
+                        icon: "error",
+                        title: "Check your connections",
+                        text: "",
+                      });
                     });
-                  });
+                  return { ...prevState, data };
+                });
               }),
             onRowUpdate: (newData, oldData) =>
               new Promise((resolve) => {
@@ -185,42 +199,47 @@ export default function Categeory() {
 
                 resolve();
                 if (oldData) {
-                  axios({
-                    method: "put",
-                    url: `${process.env.REACT_APP_API_DASH + "/product"}`,
-                    headers: {
-                      Authorization: "Bearer " + localStorage.getItem("token"),
-                    },
-                    data: {
-                      name: newData.name,
-                      price: newData.price,
-                      stock: newData.stock,
-                      description: newData.description,
-                      imgUrl: newData.imgUrl,
-                      categoryId: newData.categoryId,
-                      id: newData._id,
-                    },
-                  })
-                    .then((res) => {
-                      console.log("update", res);
-                      Swal.fire("Update Success", "", "success");
-                      handleGetProduct();
-                      setLoading((loading) => ({
-                        ...loading,
-                        update: false,
-                      }));
+                  setState((prevState) => {
+                    const data = [...prevState.data];
+                    axios({
+                      method: "put",
+                      url: `${process.env.REACT_APP_API_DASH + "/product"}`,
+                      headers: {
+                        Authorization:
+                          "Bearer " + localStorage.getItem("token"),
+                      },
+                      data: {
+                        name: newData.name,
+                        price: newData.price,
+                        stock: newData.stock,
+                        description: newData.description,
+                        imgUrl: newData.imgUrl,
+                        categoryId: newData.categoryId,
+                        id: newData._id,
+                      },
                     })
-                    .catch((err) => {
-                      setLoading((loading) => ({
-                        ...loading,
-                        update: false,
-                      }));
-                      Swal.fire({
-                        icon: "error",
-                        title: "Check your connections",
-                        text: "",
+                      .then((res) => {
+                        console.log("update", res);
+                        Swal.fire("Update Success", "", "success");
+                        handleGetProduct();
+                        setLoading((loading) => ({
+                          ...loading,
+                          update: false,
+                        }));
+                      })
+                      .catch((err) => {
+                        setLoading((loading) => ({
+                          ...loading,
+                          update: false,
+                        }));
+                        Swal.fire({
+                          icon: "error",
+                          title: "Check your connections",
+                          text: "",
+                        });
                       });
-                    });
+                    return { ...prevState, data };
+                  });
                 }
               }),
             onRowDelete: (oldData) =>
@@ -230,35 +249,38 @@ export default function Categeory() {
                   delete: true,
                 }));
                 resolve();
-
-                axios({
-                  method: "delete",
-                  url: `${process.env.REACT_APP_API_DASH +
-                    `${"/product/" + oldData._id}`}`,
-                  headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token"),
-                  },
-                })
-                  .then((res) => {
-                    //   console.log("delete category", res);
-                    handleGetProduct();
-                    Swal.fire("Delete Success", "", "success");
-                    setLoading((loading) => ({
-                      ...loading,
-                      delete: false,
-                    }));
+                setState((prevState) => {
+                  const data = [...prevState.data];
+                  axios({
+                    method: "delete",
+                    url: `${process.env.REACT_APP_API_DASH +
+                      `${"/product/" + oldData._id}`}`,
+                    headers: {
+                      Authorization: "Bearer " + localStorage.getItem("token"),
+                    },
                   })
-                  .catch((err) => {
-                    setLoading((loading) => ({
-                      ...loading,
-                      delete: false,
-                    }));
-                    Swal.fire({
-                      icon: "error",
-                      title: "Check your connections",
-                      text: "",
+                    .then((res) => {
+                      //   console.log("delete category", res);
+                      handleGetProduct();
+                      Swal.fire("Delete Success", "", "success");
+                      setLoading((loading) => ({
+                        ...loading,
+                        delete: false,
+                      }));
+                    })
+                    .catch((err) => {
+                      setLoading((loading) => ({
+                        ...loading,
+                        delete: false,
+                      }));
+                      Swal.fire({
+                        icon: "error",
+                        title: "Check your connections",
+                        text: "",
+                      });
                     });
-                  });
+                  return { ...prevState, data };
+                });
               }),
           }}
           options={{
