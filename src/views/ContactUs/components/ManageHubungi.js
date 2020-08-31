@@ -9,6 +9,7 @@ import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Button from "@material-ui/core/Button";
 import { Consumer } from "context/hubungiContext";
+import { CircularProgress } from "@material-ui/core";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -62,7 +63,11 @@ const ManageHubungi = () => {
                   disabled={add}
                   onClick={addHubungi}
                 >
-                  {post ? "Loading..." : "Add"}
+                  {post ? (
+                    <CircularProgress size={24} color="inherit" />
+                  ) : (
+                    "Add"
+                  )}
                 </Button>
 
                 <Button
@@ -72,7 +77,11 @@ const ManageHubungi = () => {
                   disabled={edit}
                   onClick={editHubungi}
                 >
-                  {put ? "Loading..." : "Edit"}
+                  {put ? (
+                    <CircularProgress size={24} color="inherit" />
+                  ) : (
+                    "Edit"
+                  )}
                 </Button>
               </CardActions>
             </Card>

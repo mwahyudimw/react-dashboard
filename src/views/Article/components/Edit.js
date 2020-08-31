@@ -9,6 +9,7 @@ import {
   Button,
   TextField,
   Avatar,
+  CircularProgress,
 } from "@material-ui/core";
 import { Consumer } from "context/articleContext";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -33,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
+    border: "none",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
@@ -77,13 +78,13 @@ export default function Edit({ openModal, handleClose, editArticle }) {
         loadArticle,
         handleEditor,
         onClose,
-        handleChange,
+        handleChangeEdit,
         handleTags,
         onImageChange,
-        addImage,
+        editImage,
       }) => {
         const { vertical, horizontal, open, title, severity } = snackbar;
-        const { picture } = values;
+        const { picture, title_edit } = values;
         const { editThumbnail, articleEdit } = loadArticle;
         return (
           <React.Fragment>
@@ -133,14 +134,15 @@ export default function Edit({ openModal, handleClose, editArticle }) {
                     <Divider />
                     <CardActions>
                       <Button
-                        onClick={addImage}
+                        onClick={editImage}
                         className={classes.uploadButton}
                         disabled={editThumbnail}
                         color="primary"
                         variant="contained"
                       >
-                        {editThumbnail ? "Loading..." : "Edit Thumbnail"}
+                        Edit Thumbnail
                       </Button>
+                      {editThumbnail && <CircularProgress size={20} />}
                     </CardActions>
                   </form>
 
@@ -149,9 +151,9 @@ export default function Edit({ openModal, handleClose, editArticle }) {
                       fullWidth
                       label="Title"
                       name="title"
-                      onChange={handleChange}
+                      onChange={handleChangeEdit}
                       type="contained"
-                      value={values.title}
+                      value={title_edit}
                       variant="outlined"
                     />
 
@@ -168,15 +170,16 @@ export default function Edit({ openModal, handleClose, editArticle }) {
                     />
                   </CardContent>
                   <Divider />
-                  <CardActions style={{ justifyContent: "center" }}>
+                  <CardActions>
                     <Button
                       color="primary"
-                      variant="outlined"
+                      variant="contained"
                       onClick={editArticle}
                       disabled={articleEdit}
                     >
-                      {articleEdit ? "Loading ..." : "Edit Article"}
+                      Edit Article
                     </Button>
+                    {articleEdit && <CircularProgress size={20} />}
                   </CardActions>
                 </Card>
               </Fade>

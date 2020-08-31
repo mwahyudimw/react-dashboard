@@ -18,6 +18,7 @@ import CreateIcon from "@material-ui/icons/Create";
 import Button from "@material-ui/core/Button";
 import moment from "moment";
 import Edit from "./Edit";
+import { CircularProgress } from "@material-ui/core";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -113,63 +114,68 @@ export default function Item() {
                 </Snackbar>
 
                 <Grid container spacing={3}>
-                  {loadArticle
-                    ? "loading.."
-                    : article.map((tile) => {
-                        return (
-                          <Grid className={classes.col} item xs={6} sm={3}>
-                            <Card key={tile._id} className={classes.cardLayout}>
-                              <CardHeader
-                                avatar={
-                                  <Avatar
-                                    aria-label="recipe"
-                                    src={user.avatar}
-                                    className={classes.avatar}
-                                  />
-                                }
-                                action={
-                                  <IconButton
-                                    aria-label="settings"
-                                    onClick={() => {
-                                      setOpen(true);
-                                      setId(tile._id);
-                                    }}
-                                  >
-                                    <CreateIcon />
-                                  </IconButton>
-                                }
-                                title={`${tile.title}`}
-                                subheader={moment(tile.createdAt).format("LLL")}
-                              />
-                              <CardMedia
-                                className={classes.media}
-                                image={`http://dashmanage.herokuapp.com/${tile.thumbnail.imageUrl}`}
-                                title={tile.title}
-                              />
-
-                              <CardContent>
-                                <Typography
-                                  variant="body2"
-                                  color="textSecondary"
-                                  dangerouslySetInnerHTML={{
-                                    __html: tile.description,
-                                  }}
+                  {loadArticle ? (
+                    <CircularProgress />
+                  ) : (
+                    article.map((tile) => {
+                      return (
+                        <Grid className={classes.col} item xs={6} sm={3}>
+                          <Card key={tile._id} className={classes.cardLayout}>
+                            <CardHeader
+                              avatar={
+                                <Avatar
+                                  aria-label="recipe"
+                                  src={user.avatar}
+                                  className={classes.avatar}
                                 />
-                              </CardContent>
-                              <CardActions disableSpacing>
-                                <Button
-                                  variant="contained"
-                                  color="secondary"
-                                  disabled={loading}
-                                  onClick={() => deleteArticle(tile._id)}
+                              }
+                              action={
+                                <IconButton
+                                  aria-label="settings"
+                                  onClick={() => {
+                                    setOpen(true);
+                                    setId(tile._id);
+                                  }}
                                 >
-                                  {loading ? "Loading ..." : "DELETE"}
-                                </Button>
-                              </CardActions>
-                            </Card>
-                          </Grid>
-                        );
-                      })}
+                                  <CreateIcon />
+                                </IconButton>
+                              }
+                              title={`${tile.title}`}
+                              subheader={moment(tile.createdAt).format("LLL")}
+                            />
+                            <CardMedia
+                              className={classes.media}
+                              image={`http://dashmanage.herokuapp.com/${tile.thumbnail.imageUrl}`}
+                              title={tile.title}
+                            />
+
+                            <CardContent>
+                              <Typography
+                                variant="body2"
+                                color="textSecondary"
+                                dangerouslySetInnerHTML={{
+                                  __html: tile.description,
+                                }}
+                              />
+                            </CardContent>
+                            <CardActions disableSpacing>
+                              <Button
+                                variant="contained"
+                                color="secondary"
+                                disabled={loading}
+                                onClick={() => deleteArticle(tile._id)}
+                              >
+                                Delete
+                              </Button>
+                              {loading && (
+                                <CircularProgress size={20} color="secondary" />
+                              )}
+                            </CardActions>
+                          </Card>
+                        </Grid>
+                      );
+                    })
+                  )}
                 </Grid>
                 <Edit
                   openModal={isopen}

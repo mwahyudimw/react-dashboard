@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardHeader,
@@ -7,12 +7,18 @@ import {
   Divider,
   Avatar,
   Button,
-  TextField,
+  Snackbar,
+  CircularProgress,
 } from "@material-ui/core";
+import MuiAlert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/styles";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from "axios";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
   details: {
@@ -35,111 +41,144 @@ const ManagePengiriman = () => {
   const classes = useStyles();
 
   const [data, setData] = useState({
-    image1: "",
-    image2: "",
-    gambar: "",
+    image: [],
+    picture: null,
     description: "",
+    type: "Pengiriman",
   });
-
-  useEffect(() => {
-    getPengiriman();
-  }, []);
+  const [snackbar, setSnackBar] = React.useState({
+    open: false,
+    vertical: "top",
+    horizontal: "right",
+    title: "",
+    severity: "",
+  });
+  const [load, setLoad] = useState(false);
 
   const onImageChange = (e) => {
+    let file = e.target.files;
+
     setData((data) => ({
       ...data,
-      image1: e.target.files[0],
-      image2: URL.createObjectURL(e.target.files[0]),
+      image: file,
     }));
   };
 
-  const onChange = (e) => {
-    const { name, value } = e.target;
-    setData({ ...data, [name]: value });
-  };
-
-  const getPengiriman = () => {
-    axios({
-      method: "get",
-      url: `${process.env.REACT_APP_API_DASH + "/pengiriman"}`,
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    }).then((res) => {
-      console.log("get", res);
-    });
-  };
-
   const postPengiriman = () => {
+    setLoad(true);
     const formData = new FormData();
-    formData.append("image", data.image1);
+    for (let i = 0; i < data.image.length; i++) {
+      formData.append("image", data.image[i]);
+    }
     formData.append("description", data.description);
+    formData.append("type", data.type);
     axios({
       method: "post",
-      url: `${process.env.REACT_APP_API_DASH + "/pengiriman"}`,
+      url: `${process.env.REACT_APP_API_DASH + "/portal-web"}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
       data: formData,
-    }).then((res) => {
-      console.log("post", res);
-    });
+    })
+      .then(() => {
+        setLoad(false);
+        setSnackBar((snackbar) => ({
+          ...snackbar,
+          open: true,
+          title: "Delivery has been added !",
+          severity: "success",
+        }));
+        window.location.reload();
+      })
+      .catch(() => {
+        setLoad(false);
+        setSnackBar((snackbar) => ({
+          ...snackbar,
+          open: true,
+          title: "Check your connections !",
+          severity: "error",
+        }));
+      });
   };
 
+  const { open, vertical, horizontal, title, severity } = snackbar;
+  const { picture } = data;
+
   return (
-    <Card>
-      <CardHeader subheader="Manage your Pengiriman" title="Pengiriman" />
-      <Divider />
-      <form id="myform" encType="multipart/form-data">
+    <>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={() =>
+          setSnackBar((prevState) => ({
+            ...prevState,
+            open: false,
+          }))
+        }
+      >
+        <Alert
+          onClose={() =>
+            setSnackBar((prevState) => ({
+              ...prevState,
+              open: false,
+            }))
+          }
+          severity={severity}
+        >
+          {title}
+        </Alert>
+      </Snackbar>
+      <Card>
+        <CardHeader subheader="Manage your Delivery" title="Delivery" />
+        <Divider />
+        <form id="myform" encType="multipart/form-data">
+          <CardContent>
+            <div className={classes.details}>
+              <Avatar className={classes.avatar} src={picture} />
+              <input
+                style={{
+                  position: "absolute",
+                  marginTop: "40px",
+                  cursor: "pointer",
+                }}
+                type="file"
+                multiple
+                name="image"
+                onChange={onImageChange}
+              />
+            </div>
+          </CardContent>
+          <Divider />
+        </form>
+
         <CardContent>
-          <div className={classes.details}>
-            <Avatar className={classes.avatar} s />
-            <input
-              style={{
-                position: "absolute",
-                marginTop: "40px",
-                cursor: "pointer",
-              }}
-              type="file"
-              name="image"
-              onChange={onImageChange}
-            />
-          </div>
+          <CKEditor
+            value={data.description}
+            name="description"
+            onChange={(event, editor) => {
+              const datas = editor.getData();
+              console.log(data);
+              setData((data) => ({
+                ...data,
+                description: datas,
+              }));
+            }}
+            editor={ClassicEditor}
+          />
         </CardContent>
         <Divider />
         <CardActions>
-          <Button
-            className={classes.uploadButton}
-            color="primary"
-            variant="contained"
-          >
-            Upload Image
+          <Button onClick={postPengiriman} color="primary" variant="contained">
+            {load ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              " Add to delivery"
+            )}
           </Button>
         </CardActions>
-      </form>
-
-      <CardContent>
-        <CKEditor
-          value={data.description}
-          name="description"
-          onChange={(event, editor) => {
-            const datas = editor.getData();
-            console.log(data);
-            setData((data) => ({
-              ...data,
-              description: datas,
-            }));
-          }}
-          editor={ClassicEditor}
-        />
-      </CardContent>
-      <Divider />
-      <CardActions>
-        <Button onClick={postPengiriman} color="primary" variant="contained">
-          Tambah ke Pengiriman
-        </Button>
-      </CardActions>
-    </Card>
+      </Card>
+    </>
   );
 };
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRecoilState } from "recoil";
-import { TestimonialStore, ClickStore } from "../../../store/TestimonialsStore";
+import { TestimonialStore, ClickStore } from "../../../store/Store";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import axios from "axios";
@@ -14,6 +14,8 @@ import {
   IconButton,
   CardContent,
   Button,
+  CircularProgress,
+  Grid,
 } from "@material-ui/core";
 import CreateIcon from "@material-ui/icons/Create";
 import Edit from "./Edit";
@@ -29,9 +31,7 @@ const useStyles = makeStyles(() => ({
     borderRadius: "50%",
   },
   root: {
-    maxWidth: 345,
-    marginTop: "30px",
-    margin: "10px",
+    flexGrow: 1,
   },
 }));
 
@@ -109,69 +109,78 @@ const Item = () => {
       </Snackbar>
 
       <Container>
-        {load
-          ? "loading..."
-          : data.map((item) => {
+        <Grid container spacing={3}>
+          {load ? (
+            <CircularProgress />
+          ) : (
+            data.map((item) => {
               return (
-                <Card className={classes.root}>
-                  <CardHeader
-                    avatar={
-                      <img
-                        className={classes.avatar}
-                        src={item.thumbnail}
-                        alt={item.name}
+                <Grid item xs={6} sm={3}>
+                  <Card>
+                    <CardHeader
+                      avatar={
+                        <img
+                          className={classes.avatar}
+                          src={item.thumbnail}
+                          alt={item.name}
+                        />
+                      }
+                      action={
+                        <IconButton
+                          aria-label="edit"
+                          onClick={() => {
+                            setIsOpen(true);
+                            setClick(item._id);
+                          }}
+                        >
+                          <CreateIcon />
+                        </IconButton>
+                      }
+                      title={item.name}
+                    />
+                    <CardContent>
+                      <Typography
+                        component="blockquote"
+                        variant="body1"
+                        dangerouslySetInnerHTML={{ __html: item.quote }}
                       />
-                    }
-                    action={
-                      <IconButton
-                        aria-label="edit"
+                    </CardContent>
+                    <CardActions>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        disabled={loadDelete}
                         onClick={() => {
-                          setIsOpen(true);
-                          setClick(item._id);
+                          setLoadDelete(true);
+                          axios({
+                            url: `${process.env.REACT_APP_API_DASH}/testimonials/${item._id}`,
+                            method: "delete",
+                            headers: {
+                              Authorization: localStorage.getItem("token"),
+                            },
+                          })
+                            .then(() => {
+                              alert("success delete");
+                              setLoadDelete(false);
+                              window.location.reload();
+                            })
+                            .catch(() => {
+                              setLoadDelete(false);
+                            });
                         }}
                       >
-                        <CreateIcon />
-                      </IconButton>
-                    }
-                    title={item.name}
-                  />
-                  <CardContent>
-                    <Typography
-                      component="blockquote"
-                      variant="body1"
-                      dangerouslySetInnerHTML={{ __html: item.quote }}
-                    />
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      disabled={loadDelete}
-                      onClick={() => {
-                        setLoadDelete(true);
-                        axios({
-                          url: `${process.env.REACT_APP_API_DASH}/testimonials/${item._id}`,
-                          method: "delete",
-                          headers: {
-                            Authorization: localStorage.getItem("token"),
-                          },
-                        })
-                          .then(() => {
-                            alert("success delete");
-                            setLoadDelete(false);
-                            window.location.reload();
-                          })
-                          .catch(() => {
-                            setLoadDelete(false);
-                          });
-                      }}
-                    >
-                      {loadDelete ? "Loading..." : "Delete"}
-                    </Button>
-                  </CardActions>
-                </Card>
+                        Delete
+                      </Button>
+                      {loadDelete && (
+                        <CircularProgress size={20} color="secondary" />
+                      )}
+                    </CardActions>
+                  </Card>
+                </Grid>
               );
-            })}
+            })
+          )}
+        </Grid>
         <Edit openModal={isOpen} handleClose={() => setIsOpen(false)} />
       </Container>
     </div>

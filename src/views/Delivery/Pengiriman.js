@@ -1,17 +1,22 @@
 import React from "react";
+import { RecoilRoot } from "recoil";
+import { Card, CardHeader, CardContent, Divider } from "@material-ui/core";
 import ManagePengiriman from "./components/ManagePengiriman";
-import { Card, CardHeader, Container } from "@material-ui/core";
+import Item from "./components/Item";
 
 const Pengiriman = () => {
   return (
-    <>
+    <RecoilRoot>
       <ManagePengiriman />
 
       <Card>
-        <CardHeader title="Pratinjau" subheader="Pengiriman" />
-        <Container></Container>
+        <CardHeader title="Pratinjau" subheader="Delivery" />
+        <Divider />
+        <CardContent>
+          <Item />
+        </CardContent>
       </Card>
-    </>
+    </RecoilRoot>
   );
 };
 

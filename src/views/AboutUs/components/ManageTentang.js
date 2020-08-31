@@ -9,12 +9,22 @@ import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Button from "@material-ui/core/Button";
 import { Consumer } from "context/tentangContext";
+import { CircularProgress } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
+const useStyles = makeStyles((theme) => ({
+  wrapper: {
+    margin: theme.spacing(1),
+    position: "relative",
+  },
+}));
+
 const ManageTentang = () => {
+  const classes = useStyles();
   return (
     <Consumer>
       {({
@@ -52,25 +62,35 @@ const ManageTentang = () => {
               </CardContent>
 
               <CardActions>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  style={{ marginTop: 20, marginLeft: 20 }}
-                  disabled={add}
-                  onClick={addTentang}
-                >
-                  {post ? "Loading..." : "Add"}
-                </Button>
+                <div className={classes.wrapper}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    disabled={add}
+                    onClick={addTentang}
+                  >
+                    {post ? (
+                      <CircularProgress size={24} color="inherit" />
+                    ) : (
+                      "Add"
+                    )}
+                  </Button>
+                </div>
 
-                <Button
-                  color="primary"
-                  variant="contained"
-                  style={{ marginTop: 20, marginLeft: 20 }}
-                  disabled={edit}
-                  onClick={editTentang}
-                >
-                  {put ? "Loading..." : "Edit"}
-                </Button>
+                <div className={classes.wrapper}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    disabled={edit}
+                    onClick={editTentang}
+                  >
+                    {put ? (
+                      <CircularProgress size={24} color="inherit" />
+                    ) : (
+                      "Edit"
+                    )}
+                  </Button>
+                </div>
               </CardActions>
             </Card>
           </React.Fragment>

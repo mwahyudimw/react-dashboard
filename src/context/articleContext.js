@@ -18,6 +18,7 @@ class ArticleProvider extends React.Component {
     loading: false,
     values: {
       title: "",
+      title_edit: "",
       tags: [],
       description: "",
       image: null,
@@ -93,6 +94,17 @@ class ArticleProvider extends React.Component {
     }));
   };
 
+  handleChangeEdit = (e) => {
+    e.persist();
+
+    this.setState((prevState) => ({
+      values: {
+        ...prevState.values,
+        title_edit: e.target.value,
+      },
+    }));
+  };
+
   handleTags = (newValue) => {
     this.setState((prevState) => ({
       values: {
@@ -156,6 +168,7 @@ class ArticleProvider extends React.Component {
             ...prevState.loadArticle,
             uploadThumbnail: false,
           },
+
           snackbar: {
             ...prevState.snackbar,
             open: true,
@@ -173,6 +186,60 @@ class ArticleProvider extends React.Component {
           loadArticle: {
             ...prevState.loadArticle,
             uploadThumbnail: false,
+          },
+          snackbar: {
+            ...prevState.snackbar,
+            open: true,
+            title: "Check your connection !",
+            severity: "error",
+          },
+        }));
+      });
+  };
+
+  editImage = () => {
+    this.setState((prevState) => ({
+      loadArticle: {
+        ...prevState.loadArticle,
+        editThumbnail: true,
+      },
+    }));
+
+    const formdata = new FormData();
+    formdata.append("image", this.state.values.image);
+
+    axios({
+      method: "post",
+      url: `${process.env.REACT_APP_API_DASH}/image`,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      data: formdata,
+    })
+      .then((res) => {
+        this.setState((prevState) => ({
+          loadArticle: {
+            ...prevState.loadArticle,
+            editThumbnail: false,
+          },
+
+          snackbar: {
+            ...prevState.snackbar,
+            open: true,
+            title: "Good job, upload success !",
+            severity: "success",
+          },
+          values: {
+            ...prevState.values,
+            imgrequest: res.data.thumbnail,
+          },
+        }));
+      })
+      .catch(() => {
+        this.setState((prevState) => ({
+          loadArticle: {
+            ...prevState.loadArticle,
+            editThumbnail: false,
           },
           snackbar: {
             ...prevState.snackbar,
@@ -279,7 +346,7 @@ class ArticleProvider extends React.Component {
     this.setState((prevState) => ({
       values: {
         ...prevState.values,
-        title: "",
+        title_edit: "",
         tags: [],
         description: "",
         image: null,
@@ -290,13 +357,12 @@ class ArticleProvider extends React.Component {
       loadArticle: {
         ...prevState.loadArticle,
         articleEdit: true,
-        editThumbnail: true,
       },
     }));
 
     const dataArticle = {
       id: id,
-      title: this.state.values.title,
+      title: this.state.values.title_edit,
       tags: this.state.values.tags,
       thumbnail: this.state.values.imgrequest,
       description: this.state.values.description,
@@ -314,7 +380,7 @@ class ArticleProvider extends React.Component {
         this.setState((prevState) => ({
           values: {
             ...prevState.values,
-            title: "",
+            title_edit: "",
             tags: [],
             description: "",
             image: null,
@@ -341,7 +407,7 @@ class ArticleProvider extends React.Component {
         this.setState((prevState) => ({
           values: {
             ...prevState.values,
-            title: "",
+            title_edit: "",
             tags: [],
             description: "",
             image: "",
@@ -413,9 +479,11 @@ class ArticleProvider extends React.Component {
       onClose,
       deleteArticle,
       handleChange,
+      handleChangeEdit,
       handleTags,
       onImageChange,
       addImage,
+      editImage,
       handleEditor,
       addArticle,
       editArticle,
@@ -427,9 +495,11 @@ class ArticleProvider extends React.Component {
           onClose: onClose,
           deleteArticle: deleteArticle,
           handleChange: handleChange,
+          handleChangeEdit: handleChangeEdit,
           handleTags: handleTags,
           onImageChange: onImageChange,
           addImage: addImage,
+          editImage: editImage,
           handleEditor: handleEditor,
           addArticle: addArticle,
           editArticle: editArticle,

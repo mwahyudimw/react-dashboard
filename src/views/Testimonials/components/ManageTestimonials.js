@@ -7,14 +7,21 @@ import {
   Divider,
   Avatar,
   Button,
+  Snackbar,
   TextField,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { useRecoilState } from "recoil";
-import { ClickStore } from "../../../store/TestimonialsStore";
+import { ClickStore } from "../../../store/Store";
+import MuiAlert from "@material-ui/lab/Alert";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from "axios";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
   details: {
@@ -42,9 +49,17 @@ const ManageTestimonial = () => {
     quote: "",
   });
   const [load, setLoad] = React.useState(false);
+  const [snackbar, setSnackBar] = React.useState({
+    open: false,
+    vertical: "top",
+    horizontal: "right",
+    title: "",
+    severity: "",
+  });
   const [click] = useRecoilState(ClickStore);
 
   const { name, thumbnail, quote, picture } = values;
+  const { open, horizontal, title, vertical, severity } = snackbar;
 
   const onImageChange = (e) => {
     e.preventDefault();
@@ -90,15 +105,49 @@ const ManageTestimonial = () => {
 
       const responseJson = await response;
       setLoad(false);
+      setSnackBar((snackbar) => ({
+        ...snackbar,
+        open: true,
+        title: "Testmonials has been create !",
+        severity: "success",
+      }));
       console.log(responseJson);
     } catch (err) {
       setLoad(false);
-      console.log(err);
+      setSnackBar(() => ({
+        ...snackbar,
+        open: true,
+        title: "Check your connection !",
+        severity: "error",
+      }));
     }
   };
 
   return (
     <>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={() =>
+          setSnackBar((prevState) => ({
+            ...prevState,
+            open: false,
+          }))
+        }
+      >
+        <Alert
+          onClose={() =>
+            setSnackBar((prevState) => ({
+              ...prevState,
+              open: false,
+            }))
+          }
+          severity={severity}
+        >
+          {title}
+        </Alert>
+      </Snackbar>
       <Card>
         <CardHeader subheader="Manage your Testimonials" title="Testimonials" />
         <Divider />
@@ -145,9 +194,15 @@ const ManageTestimonial = () => {
         </CardContent>
         <Divider />
         <CardActions>
-          <Button color="primary" variant="contained" onClick={addTestimonials}>
-            {load ? "Loading..." : "Add Testimonials"}
+          <Button
+            disabled={load}
+            color="primary"
+            variant="contained"
+            onClick={addTestimonials}
+          >
+            Add Testimonials
           </Button>
+          {load && <CircularProgress size={20} />}
         </CardActions>
       </Card>
     </>

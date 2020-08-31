@@ -8,6 +8,7 @@ import {
   Avatar,
   Button,
   TextField,
+  CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { Consumer } from "../../../context/articleContext";
@@ -112,8 +113,9 @@ const ManageArticle = () => {
                     color="primary"
                     variant="contained"
                   >
-                    {uploadThumbnail ? "Loading..." : "Upload Thumbnail"}
+                    Upload Thumbnails
                   </Button>
+                  {uploadThumbnail && <CircularProgress size={20} />}
                 </CardActions>
               </form>
 
@@ -148,8 +150,9 @@ const ManageArticle = () => {
                   onClick={addArticle}
                   disabled={articleAdd}
                 >
-                  {articleAdd ? "Loading ..." : "Add Article"}
+                  Add Article
                 </Button>
+                {articleAdd && <CircularProgress size={20} />}
               </CardActions>
             </Card>
           </React.Fragment>
