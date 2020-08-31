@@ -1,38 +1,33 @@
 import React, { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@material-ui/styles";
+import { ProductContext } from "../../context/productContext";
 import MaterialTable from "material-table";
 import axios from "axios";
-import { ProductContext } from "../../context/productContext";
-import Moment from "moment";
 import LoadingOverlay from "react-loading-overlay";
 import Swal from "sweetalert2";
+import Moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(0.5),
   },
   content: {
     marginTop: theme.spacing(0),
   },
 }));
 
-export default function Products() {
+export default function Transactions() {
   const classes = useStyles();
   const [productContext, setProductContext] = useContext(ProductContext);
   const [dataTransaction, setDataTransaction] = useState([]);
-  const [loading, setLoading] = useState({
-    get: false,
-    add: false,
-    update: false,
-    delete: false,
-  });
+
+  const [loading, setLoading] = useState(false);
 
   var obj = productContext.reduce(function(acc, cur, i) {
     acc[cur._id] = cur.name;
     return acc;
   }, {});
-
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     columns: [
       { title: "Name", field: "name" },
       {
@@ -58,10 +53,18 @@ export default function Products() {
   });
 
   useEffect(() => {
+    if (loading === true) {
+      getTransaction();
+    }
+  }, []);
+
+  useEffect(() => {
     getTransaction();
   }, []);
 
-  const getTransaction = async () => {
+  const getTransaction = () => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
     setLoading((loading) => ({
       ...loading,
       get: true,
@@ -72,9 +75,10 @@ export default function Products() {
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
+      signal: signal,
     })
       .then((res) => {
-        console.log("transaction", res.data.transactions);
+        console.log("respon get category", res.data.transactions);
         setDataTransaction(res.data.transactions);
         setLoading((loading) => ({
           ...loading,
@@ -86,34 +90,125 @@ export default function Products() {
           ...loading,
           get: false,
         }));
+        Swal.fire({
+          icon: "error",
+          title: "Check your connections",
+          text: "",
+        });
+      });
+
+    return function cleanup() {
+      abortController.abort();
+    };
+  };
+
+  const handleRowDelete = (oldData, resolve) => {
+    axios({
+      method: "delete",
+      url: `${process.env.REACT_APP_API_DASH +
+        `${"/transactions/" + oldData._id}`}`,
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+      .then((res) => {
+        console.log("delete ", res);
+        const dataDelete = [...dataTransaction];
+        const index = oldData._id;
+        dataDelete.splice(index, 1);
+        setDataTransaction([...dataDelete]);
+        Swal.fire("Delete Success", "", "success");
+        resolve();
+      })
+      .catch((err) => {
+        setLoading((loading) => ({
+          ...loading,
+          delete: false,
+        }));
+        Swal.fire({
+          icon: "error",
+          title: "Check your connections",
+          text: "",
+        });
+        resolve();
       });
   };
-  const getTransactions = async () => {
-    setLoading((loading) => ({
-      ...loading,
-      get: true,
-    }));
+
+  const handleRowAdd = (newData, resolve) => {
     axios({
-      method: "get",
+      method: "post",
       url: `${process.env.REACT_APP_API_DASH + "/transactions"}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
+      data: {
+        value: newData.value,
+        dateTransaction: Moment().format("Do MMMM YYYY"),
+        productId: newData.productId,
+        name: newData.name,
+      },
     })
       .then((res) => {
-        setLoading((loading) => ({
-          ...loading,
-          get: false,
-        }));
-        console.log("transaction", res.data.transactions);
-        setDataTransaction(res.data.transactions);
+        let dataToAdd = [...dataTransaction];
+        dataToAdd.push({
+          value: newData.value,
+          dateTransaction: Moment().format("Do MMMM YYYY"),
+          productId: "Refresh untuk update",
+          name: newData.name,
+          price: "Refresh untuk update",
+        });
+        setDataTransaction(dataToAdd);
+        resolve();
+        Swal.fire("Good job!", "added success", "success");
       })
       .catch((err) => {
-        setLoading((loading) => ({
-          ...loading,
-          get: false,
-        }));
+        resolve();
+        Swal.fire({
+          icon: "error",
+          title: "Check your connections",
+          text: "",
+        });
       });
+  };
+
+  const handleRowUpdate = (newData, oldData, resolve) => {
+    if (oldData) {
+      axios({
+        method: "put",
+        url: `${process.env.REACT_APP_API_DASH + "/transactions"}`,
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+        data: {
+          name: newData.name,
+          dateTransaction: newData.dateTransaction,
+          value: newData.value,
+          productId: newData.productId,
+          id: newData._id,
+        },
+      })
+        .then((res) => {
+          console.log("update", res.data.transaction);
+          const dataUpdate = [...dataTransaction];
+          const index = dataTransaction.findIndex(
+            (transaction) => transaction._id === oldData._id
+          );
+          console.log("index", index);
+          dataUpdate[index] = newData;
+          setDataTransaction(dataUpdate);
+          setLoading(true);
+          resolve();
+          Swal.fire("Update Success", "", "success");
+        })
+        .catch((err) => {
+          resolve();
+          Swal.fire({
+            icon: "error",
+            title: "Check your connections",
+            text: "",
+          });
+        });
+    }
   };
 
   return (
@@ -139,130 +234,26 @@ export default function Products() {
       <div className={classes.root}>
         <MaterialTable
           className={classes.content}
-          title="Products"
+          title="Transactions"
           columns={state.columns}
           data={dataTransaction.map(({ productId, ...rest }) => {
             return {
               ...rest,
-              productId: productId.name,
+              productId: productId._id,
             };
           })}
           editable={{
             onRowAdd: (newData) =>
               new Promise((resolve) => {
-                setLoading((loading) => ({
-                  ...loading,
-                  add: true,
-                }));
-                resolve();
-                setState((prevState) => {
-                  const data = [...prevState.data];
-                  axios({
-                    method: "post",
-                    url: `${process.env.REACT_APP_API_DASH + "/transactions"}`,
-                    headers: {
-                      Authorization: "Bearer " + localStorage.getItem("token"),
-                    },
-                    data: {
-                      value: newData.value,
-                      dateTransaction: Moment().format("Do MMMM YYYY"),
-                      productId: newData.productId,
-                      name: newData.name,
-                    },
-                  })
-                    .then((res) => {
-                      console.log("res addd", res);
-                      getTransactions();
-                      setLoading((loading) => ({
-                        ...loading,
-                        add: false,
-                      }));
-                    })
-                    .catch((err) => {
-                      setLoading((loading) => ({
-                        ...loading,
-                        add: false,
-                      }));
-                    });
-                  return { ...prevState, data };
-                });
+                handleRowAdd(newData, resolve);
               }),
             onRowUpdate: (newData, oldData) =>
               new Promise((resolve) => {
-                setLoading((loading) => ({
-                  ...loading,
-                  update: true,
-                }));
-                resolve();
-                if (oldData) {
-                  axios({
-                    method: "put",
-                    url: `${process.env.REACT_APP_API_DASH + "/transactions"}`,
-                    headers: {
-                      Authorization: "Bearer " + localStorage.getItem("token"),
-                    },
-                    data: {
-                      name: newData.name,
-                      dateTransaction: newData.dateTransaction,
-                      value: newData.value,
-                      productId: newData.productId,
-                      id: newData._id,
-                    },
-                  })
-                    .then((res) => {
-                      console.log("put", res);
-                      getTransaction();
-                      setLoading((loading) => ({
-                        ...loading,
-                        update: false,
-                      }));
-                    })
-                    .catch((err) => {
-                      setLoading((loading) => ({
-                        ...loading,
-                        update: false,
-                      }));
-                    });
-                }
+                handleRowUpdate(newData, oldData, resolve);
               }),
             onRowDelete: (oldData) =>
               new Promise((resolve) => {
-                setLoading((loading) => ({
-                  ...loading,
-                  delete: true,
-                }));
-                setTimeout(() => {
-                  resolve();
-
-                  axios({
-                    method: "delete",
-                    url: `${process.env.REACT_APP_API_DASH +
-                      `${"/transactions/" + oldData._id}`}`,
-                    headers: {
-                      Authorization: "Bearer " + localStorage.getItem("token"),
-                    },
-                    data: oldData,
-                  })
-                    .then((res) => {
-                      Swal.fire("Delete Success", "", "success");
-                      getTransaction();
-                      setLoading((loading) => ({
-                        ...loading,
-                        delete: false,
-                      }));
-                    })
-                    .catch((err) => {
-                      setLoading((loading) => ({
-                        ...loading,
-                        delete: false,
-                      }));
-                      Swal.fire({
-                        icon: "error",
-                        title: "Check your connections",
-                        text: "",
-                      });
-                    });
-                });
+                handleRowDelete(oldData, resolve);
               }),
           }}
           options={{
@@ -278,23 +269,6 @@ export default function Products() {
             },
             exportButton: true,
           }}
-          detailPanel={(rowData) => {
-            return (
-              <img
-                style={{
-                  width: "25%",
-                  height: "250px",
-                  display: "block",
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                  marginTop: "10px",
-                  marginBottom: "10px",
-                }}
-                src="https://images.unsplash.com/photo-1495231916356-a86217efff12?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=676&q=80"
-              />
-            );
-          }}
-          onRowClick={(event, rowData, togglePanel) => togglePanel()}
         />
       </div>
     </LoadingOverlay>

@@ -154,7 +154,7 @@ export default function Category() {
                 resolve();
                 if (oldData) {
                   setState((prevState) => {
-                    const data = [...prevState.data];
+                    const data = [...prevState.map((el) => el.name)];
                     axios({
                       method: "put",
                       url: `${process.env.REACT_APP_API_DASH + "/category"}`,

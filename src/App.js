@@ -6,6 +6,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import validate from "validate.js";
 import { CategoryProvider } from "./context/categoryContext";
 import { ProductProvider } from "./context/productContext";
+import { LoadingProvider } from "./context/loadingContext";
 import { chartjs } from "./helpers";
 import theme from "./theme";
 import "react-perfect-scrollbar/dist/css/styles.css";
@@ -27,15 +28,17 @@ validate.validators = {
 export default class App extends Component {
   render() {
     return (
-      <ProductProvider>
-        <CategoryProvider>
-          <ThemeProvider theme={theme}>
-            <Router history={browserHistory}>
-              <Routes />
-            </Router>
-          </ThemeProvider>
-        </CategoryProvider>
-      </ProductProvider>
+      <LoadingProvider>
+        <ProductProvider>
+          <CategoryProvider>
+            <ThemeProvider theme={theme}>
+              <Router history={browserHistory}>
+                <Routes />
+              </Router>
+            </ThemeProvider>
+          </CategoryProvider>
+        </ProductProvider>
+      </LoadingProvider>
     );
   }
 }

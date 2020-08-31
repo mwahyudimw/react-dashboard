@@ -8,7 +8,9 @@ import MenuIcon from "@material-ui/icons/Menu";
 import TranslateIcon from "@material-ui/icons/Translate";
 import InputIcon from "@material-ui/icons/Input";
 import { CategoryContext } from "../../../../context/categoryContext";
+import { ProductContext } from "../../../../context/productContext";
 import axios from "axios";
+import { LoadingContext } from "../../../../context/loadingContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,24 +28,57 @@ const useStyles = makeStyles((theme) => ({
 const Topbar = (props) => {
   const { className, onSidebarOpen, ...rest } = props;
   const [categoryContext, setCategoryContext] = useContext(CategoryContext);
+  const [loadingContext, setLoadingContext] = useContext(LoadingContext);
+  const [productContext, setProductContext] = useContext(ProductContext);
   const classes = useStyles();
 
   const [notifications] = useState([]);
 
   useEffect(() => {
     handleGetCategory();
+    handleGetProduct();
   }, []);
 
   const handleGetCategory = () => {
+    setLoadingContext(true);
     axios({
       method: "get",
       url: `${process.env.REACT_APP_API_DASH + "/category"}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
-    }).then((res) => {
-      setCategoryContext(res.data.categories);
-    });
+    })
+      .then((res) => {
+        setCategoryContext(res.data.categories);
+        setLoadingContext(false);
+      })
+      .catch((err) => {
+        setLoadingContext(false);
+      });
+  };
+
+  const handleGetProduct = () => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+    setLoadingContext(true);
+    axios({
+      method: "get",
+      url: `${process.env.REACT_APP_API_DASH + "/product"}`,
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+      signal: signal,
+    })
+      .then((res) => {
+        setProductContext(res.data.products);
+        setLoadingContext(false);
+      })
+      .catch((err) => {
+        setLoadingContext(false);
+      });
+    return function cleanup() {
+      abortController.abort();
+    };
   };
 
   const logout = () => {

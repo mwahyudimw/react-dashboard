@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/styles";
 import MaterialTable from "material-table";
 import { CategoryContext } from "../../context/categoryContext";
 import { ProductContext } from "../../context/productContext";
+import { LoadingContext } from "../../context/loadingContext";
 import axios from "axios";
 import LoadingOverlay from "react-loading-overlay";
 import Swal from "sweetalert2";
@@ -16,10 +17,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Categeory() {
+export default function Product() {
   const classes = useStyles();
   const [categoryContext, setCategoryContext] = useContext(CategoryContext);
   const [productContext, setProductContext] = useContext(ProductContext);
+  const [loadingContext, setLoadingContext] = useContext(LoadingContext);
   const [dataProduct, setDataProduct] = useState([]);
 
   var obj = categoryContext.reduce(function(acc, cur, i) {
@@ -57,17 +59,6 @@ export default function Categeory() {
         lookup: obj,
       },
     ],
-    data: [
-      {
-        name: "Daun",
-      },
-      {
-        name: "Pohon",
-      },
-      {
-        name: "Lontong",
-      },
-    ],
   });
 
   useEffect(() => {
@@ -75,6 +66,8 @@ export default function Categeory() {
   }, []);
 
   const handleGetProduct = () => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
     setLoading((loading) => ({
       ...loading,
       get: true,
@@ -85,6 +78,7 @@ export default function Categeory() {
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
+      signal: signal,
     })
       .then((res) => {
         console.log("coba", res.data.products);
@@ -106,18 +100,25 @@ export default function Categeory() {
           text: "",
         });
       });
+    return function cleanup() {
+      abortController.abort();
+    };
   };
 
   return (
     <LoadingOverlay
       active={
-        loading.get || loading.add || loading.update || loading.delete === true
+        loading.get ||
+        loading.add ||
+        loading.update ||
+        loading.delete ||
+        loadingContext === true
           ? true
           : false
       }
       spinner
       text={
-        loading.get
+        loading.get || loadingContext
           ? "loading your data..."
           : loading.add
           ? "add data..."
@@ -148,47 +149,44 @@ export default function Categeory() {
                   add: true,
                 }));
                 resolve();
-                setState((prevState) => {
-                  const data = [...prevState.data];
-                  const formData = new FormData();
-                  formData.append("image", imagesUrl);
-                  formData.append("name", newData.name);
-                  formData.append("price", newData.price);
-                  formData.append("stock", newData.stock);
-                  formData.append("description", newData.description);
-                  formData.append("categoryId", newData.categoryId);
 
-                  console.log("form adata", formData);
-                  axios({
-                    method: "post",
-                    url: `${process.env.REACT_APP_API_DASH + "/product"}`,
-                    headers: {
-                      Authorization: "Bearer " + localStorage.getItem("token"),
-                    },
-                    data: formData,
+                const formData = new FormData();
+                formData.append("image", imagesUrl);
+                formData.append("name", newData.name);
+                formData.append("price", newData.price);
+                formData.append("stock", newData.stock);
+                formData.append("description", newData.description);
+                formData.append("categoryId", newData.categoryId);
+
+                console.log("form adata", formData);
+                axios({
+                  method: "post",
+                  url: `${process.env.REACT_APP_API_DASH + "/product"}`,
+                  headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token"),
+                  },
+                  data: formData,
+                })
+                  .then((res) => {
+                    console.log("tambah", res);
+                    Swal.fire("Added Success", "", "success");
+                    handleGetProduct();
+                    setLoading((loading) => ({
+                      ...loading,
+                      add: false,
+                    }));
                   })
-                    .then((res) => {
-                      console.log("tambah", res);
-                      Swal.fire("Added Success", "", "success");
-                      handleGetProduct();
-                      setLoading((loading) => ({
-                        ...loading,
-                        add: false,
-                      }));
-                    })
-                    .catch((err) => {
-                      setLoading((loading) => ({
-                        ...loading,
-                        add: false,
-                      }));
-                      Swal.fire({
-                        icon: "error",
-                        title: "Check your connections",
-                        text: "",
-                      });
+                  .catch((err) => {
+                    setLoading((loading) => ({
+                      ...loading,
+                      add: false,
+                    }));
+                    Swal.fire({
+                      icon: "error",
+                      title: "Check your connections",
+                      text: "",
                     });
-                  return { ...prevState, data };
-                });
+                  });
               }),
             onRowUpdate: (newData, oldData) =>
               new Promise((resolve) => {
@@ -199,47 +197,42 @@ export default function Categeory() {
 
                 resolve();
                 if (oldData) {
-                  setState((prevState) => {
-                    const data = [...prevState.data];
-                    axios({
-                      method: "put",
-                      url: `${process.env.REACT_APP_API_DASH + "/product"}`,
-                      headers: {
-                        Authorization:
-                          "Bearer " + localStorage.getItem("token"),
-                      },
-                      data: {
-                        name: newData.name,
-                        price: newData.price,
-                        stock: newData.stock,
-                        description: newData.description,
-                        imgUrl: newData.imgUrl,
-                        categoryId: newData.categoryId,
-                        id: newData._id,
-                      },
+                  axios({
+                    method: "put",
+                    url: `${process.env.REACT_APP_API_DASH + "/product"}`,
+                    headers: {
+                      Authorization: "Bearer " + localStorage.getItem("token"),
+                    },
+                    data: {
+                      name: newData.name,
+                      price: newData.price,
+                      stock: newData.stock,
+                      description: newData.description,
+                      imgUrl: newData.imgUrl,
+                      categoryId: newData.categoryId,
+                      id: newData._id,
+                    },
+                  })
+                    .then((res) => {
+                      console.log("update", res);
+                      Swal.fire("Update Success", "", "success");
+
+                      setLoading((loading) => ({
+                        ...loading,
+                        update: false,
+                      }));
                     })
-                      .then((res) => {
-                        console.log("update", res);
-                        Swal.fire("Update Success", "", "success");
-                        handleGetProduct();
-                        setLoading((loading) => ({
-                          ...loading,
-                          update: false,
-                        }));
-                      })
-                      .catch((err) => {
-                        setLoading((loading) => ({
-                          ...loading,
-                          update: false,
-                        }));
-                        Swal.fire({
-                          icon: "error",
-                          title: "Check your connections",
-                          text: "",
-                        });
+                    .catch((err) => {
+                      setLoading((loading) => ({
+                        ...loading,
+                        update: false,
+                      }));
+                      Swal.fire({
+                        icon: "error",
+                        title: "Check your connections",
+                        text: "",
                       });
-                    return { ...prevState, data };
-                  });
+                    });
                 }
               }),
             onRowDelete: (oldData) =>
@@ -249,38 +242,35 @@ export default function Categeory() {
                   delete: true,
                 }));
                 resolve();
-                setState((prevState) => {
-                  const data = [...prevState.data];
-                  axios({
-                    method: "delete",
-                    url: `${process.env.REACT_APP_API_DASH +
-                      `${"/product/" + oldData._id}`}`,
-                    headers: {
-                      Authorization: "Bearer " + localStorage.getItem("token"),
-                    },
+
+                axios({
+                  method: "delete",
+                  url: `${process.env.REACT_APP_API_DASH +
+                    `${"/product/" + oldData._id}`}`,
+                  headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token"),
+                  },
+                })
+                  .then((res) => {
+                    //   console.log("delete category", res);
+                    handleGetProduct();
+                    Swal.fire("Delete Success", "", "success");
+                    setLoading((loading) => ({
+                      ...loading,
+                      delete: false,
+                    }));
                   })
-                    .then((res) => {
-                      //   console.log("delete category", res);
-                      handleGetProduct();
-                      Swal.fire("Delete Success", "", "success");
-                      setLoading((loading) => ({
-                        ...loading,
-                        delete: false,
-                      }));
-                    })
-                    .catch((err) => {
-                      setLoading((loading) => ({
-                        ...loading,
-                        delete: false,
-                      }));
-                      Swal.fire({
-                        icon: "error",
-                        title: "Check your connections",
-                        text: "",
-                      });
+                  .catch((err) => {
+                    setLoading((loading) => ({
+                      ...loading,
+                      delete: false,
+                    }));
+                    Swal.fire({
+                      icon: "error",
+                      title: "Check your connections",
+                      text: "",
                     });
-                  return { ...prevState, data };
-                });
+                  });
               }),
           }}
           options={{
