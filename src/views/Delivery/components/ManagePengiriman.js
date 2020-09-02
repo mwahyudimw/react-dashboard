@@ -12,6 +12,8 @@ import {
 } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/styles";
+import { useRecoilState } from "recoil";
+import { isDisabled } from "store/Store";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from "axios";
@@ -54,6 +56,7 @@ const ManagePengiriman = () => {
     severity: "",
   });
   const [load, setLoad] = useState(false);
+  const [isFalse] = useRecoilState(isDisabled);
 
   const onImageChange = (e) => {
     let file = e.target.files;
@@ -169,7 +172,12 @@ const ManagePengiriman = () => {
         </CardContent>
         <Divider />
         <CardActions>
-          <Button onClick={postPengiriman} color="primary" variant="contained">
+          <Button
+            onClick={postPengiriman}
+            disabled={isFalse}
+            color="primary"
+            variant="contained"
+          >
             {load ? (
               <CircularProgress size={24} color="inherit" />
             ) : (

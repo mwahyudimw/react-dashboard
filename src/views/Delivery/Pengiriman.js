@@ -10,7 +10,7 @@ const Pengiriman = () => {
       <ManagePengiriman />
 
       <Card>
-        <CardHeader title="Pratinjau" subheader="Delivery" />
+        <CardHeader title="Preview" subheader="Delivery" />
         <Divider />
         <CardContent>
           <Item />

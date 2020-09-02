@@ -14,3 +14,8 @@ export const DeliveryStore = atom({
   key: "DeliveryStore",
   default: [],
 });
+
+export const isDisabled = atom({
+  key: "isDisabled",
+  default: false,
+});

@@ -1,18 +1,16 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useRecoilState } from "recoil";
-import { DeliveryStore, ClickStore } from "../../../store/Store";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { DeliveryStore, ClickStore, isDisabled } from "../../../store/Store";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import axios from "axios";
 import {
   Card,
   CardHeader,
-  CardActions,
   Typography,
   Container,
   CardContent,
-  Button,
   CircularProgress,
   Grid,
   Menu,
@@ -21,7 +19,6 @@ import {
   Avatar,
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import EditImage from "./EditImage";
 import EditDescription from "./EditDescription";
 
 function Alert(props) {
@@ -42,7 +39,8 @@ const useStyles = makeStyles(() => ({
 const Item = () => {
   const classes = useStyles();
   const [data, setData] = useRecoilState(DeliveryStore);
-  const [clickStore, setClickStore] = useRecoilState(ClickStore);
+  const setisFalse = useSetRecoilState(isDisabled);
+  const setClickStore = useSetRecoilState(ClickStore);
   const [load, setLoad] = React.useState(true);
   const [loadDelete, setLoadDelete] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -86,10 +84,13 @@ const Item = () => {
             ...prevState,
             open: true,
             title: "Delivery is empty, please make first delivery now !",
+            severity: "info",
           }));
+          setisFalse(false);
         } else {
           setLoad(false);
           setData(responseJson.data.portalWebs);
+          setisFalse(true);
         }
         console.log(responseJson);
       } catch (err) {
@@ -97,7 +98,7 @@ const Item = () => {
       }
     };
     getData();
-  }, [DeliveryStore]);
+  }, [data]);
 
   const { vertical, horizontal, open, title, severity } = snackbar;
 
@@ -242,15 +243,7 @@ const Item = () => {
             })
           )}
         </Grid>
-        <EditImage
-          openModal={isOpen.image}
-          handleClose={() =>
-            setIsOpen((isOpen) => ({
-              ...isOpen,
-              image: false,
-            }))
-          }
-        />
+
         <EditDescription
           modalOpen={isOpen.description}
           closeHandle={() => {
