@@ -5,12 +5,8 @@ import {
   CardContent,
   CardActions,
   Divider,
-  Avatar,
   Button,
   IconButton,
-  CardMedia,
-  Typography,
-  TextField,
   Menu,
   MenuItem,
 } from "@material-ui/core";
@@ -201,6 +197,7 @@ const ManageGaleri = () => {
                     width: "150px",
                     height: "100px",
                   }}
+                  alt="avatar"
                 />
               ) : (
                 <img
@@ -210,6 +207,7 @@ const ManageGaleri = () => {
                     width: "150px",
                     height: "100px",
                   }}
+                  alt="avatar-2"
                 />
               )}
               <input
